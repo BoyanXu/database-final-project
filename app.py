@@ -3,31 +3,21 @@
 #----------------------------------------------------------------------------#
 
 from functools import wraps
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, url_for, redirect
 from flask.globals import current_app, session
 from flask.helpers import flash, url_for
+
 import pymysql
 import pymysql.cursors
-# from flask.ext.sqlalchemy import SQLAlchemy
+
+from appconf import app, conn
+
+import register
+
 import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
-
-#----------------------------------------------------------------------------#
-# App Config.
-#----------------------------------------------------------------------------#
-
-app = Flask(__name__)
-app.config.from_object('config')
-#db = SQLAlchemy(app)
-
-# Automatically tear down SQLAlchemy.
-'''
-@app.teardown_request
-def shutdown_session(exception=None):
-    db_session.remove()
-'''
 
 # Login required decorator.
 
@@ -65,12 +55,18 @@ def home():
 def about():
     return render_template('pages/placeholder.about.html')
 
-
-@app.route('/login')
+#Login page
+@app.route('/login', methods=['GET'])
 def login():
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
 
+#Login Authentication
+@app.route('/loginAuthentication', methods=['GET', 'POST'])
+def loginAuthentication():
+    form = LoginForm(request.form)
+    print(form.name)
+    return render_template('pages/placeholder.home.html')
 
 @app.route('/register')
 def register():
