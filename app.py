@@ -3,6 +3,8 @@
 #----------------------------------------------------------------------------#
 
 from flask import Flask, render_template, request
+import pymysql
+import pymysql.cursors
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
@@ -36,6 +38,16 @@ def login_required(test):
             return redirect(url_for('login'))
     return wrap
 '''
+
+conn = pymysql.connect(host='127.0.0.1',
+                       user='root',
+                       password='', # password for XMAPP
+                       db='university',
+                       # port=5000,
+                       unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
+                       charset='utf8mb4',
+                       cursorclass=pymysql.cursors.DictCursor)
+
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
@@ -98,10 +110,4 @@ if not app.debug:
 # Default port:
 if __name__ == '__main__':
     app.run()
-
-# Or specify port manually:
-'''
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-'''
+    app.run(host='127.0.0.1', port=5000, debug = True)
