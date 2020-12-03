@@ -2,7 +2,10 @@
 # Imports
 #----------------------------------------------------------------------------#
 
+from functools import wraps
 from flask import Flask, render_template, request
+from flask.globals import current_app, session
+from flask.helpers import flash, url_for
 import pymysql
 import pymysql.cursors
 # from flask.ext.sqlalchemy import SQLAlchemy
@@ -27,17 +30,17 @@ def shutdown_session(exception=None):
 '''
 
 # Login required decorator.
-'''
-def login_required(test):
-    @wraps(test)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return test(*args, **kwargs)
-        else:
-            flash('You need to login first.')
-            return redirect(url_for('login'))
-    return wrap
-'''
+
+# def login_required(test):
+#     @wraps(test)
+#     def wrap(*args, **kwargs):
+#         if 'logged_in' in session:
+#             return test(*args, **kwargs)
+#         else:
+#             flash('You need to login first.')
+#             return redirect(url_for('login'))
+#     return wrap
+
 
 conn = pymysql.connect(host='127.0.0.1',
                        user='root',
