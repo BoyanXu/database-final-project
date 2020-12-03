@@ -62,8 +62,8 @@ def login():
     return render_template('forms/login.html', form=form)
 
 #Login Authentication
-@app.route('/loginAuthentication', methods=['GET', 'POST'])
-def loginAuthentication():
+@app.route('/login/auth', methods=['GET', 'POST'])
+def loginAuth():
     form = LoginForm(request.form)
     print(form.name)
     return render_template('pages/placeholder.home.html')

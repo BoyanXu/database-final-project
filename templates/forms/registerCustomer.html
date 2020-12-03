@@ -1,0 +1,27 @@
+{% extends 'layouts/form.html' %}
+{% block title %}Register as Customer{% endblock %}
+{% block content %}
+  <form method="post" class="form" action="/register/customer/auth">
+    <h3 class="form-heading">Register <a href="{{ url_for('home') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
+
+    {{ form.name(class_ = 'form-control first-input', placeholder = form.name.label.text, required = true, autofocus = true) }}
+    {{ form.email(class_ = 'form-control', placeholder = form.email.label.text, required = true) }}
+    {{ form.password(class_ = 'form-control', placeholder = form.password.label.text, required = true) }}
+    {{ form.confirm(class_ = 'form-control', placeholder = form.confirm.label.text, required = true) }}
+    {{ form.buildingNumber(class_ = 'form-control', placeholder = form.buildingNumber.label.text, required = true) }}
+    {{ form.street(class_ = 'form-control', placeholder = form.street.label.text, required = true) }}
+    {{ form.city(class_ = 'form-control', placeholder = form.city.label.text, required = true) }}
+    {{ form.state(class_ = 'form-control', placeholder = form.state.label.text, required = true) }}
+    {{ form.phone(class_ = 'form-control', placeholder = form.phone.label.text, required = true) }}
+    {{ form.passportNum(class_ = 'form-control', placeholder = form.passportNum.label.text, required = true) }}
+    {{ form.passportExpiry(class_ = 'form-control', placeholder = form.passportExpiry.label.text, required = true) }}
+    {{ form.passportCountry(class_ = 'form-control', placeholder = form.passportCountry.label.text, required = true) }}
+    {{ form.birth(class_ = 'form-control last-input', placeholder = form.birth.label.text, required = true) }}
+
+
+    <p class="pull-left"><a href="{{ url_for('login') }}">Login</a></p>
+
+    <input type="submit" value="Register" class="btn btn-primary btn-lg btn-block">
+
+  </form>
+{% endblock %}
