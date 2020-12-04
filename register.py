@@ -4,6 +4,11 @@ import pymysql.cursors
 
 from appconf import app, conn
 
+@app.route('/register')
+def register():
+    form = RegisterForm(request.form)
+    return render_template('forms/register.html', form=form)
+
 @app.route('/register/customer')
 def registerCustomer():
     form = RegisterCustomerForm(request.form)

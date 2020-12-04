@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, IntegerField
+from wtforms import TextField, PasswordField, IntegerField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, EqualTo, Length
 
@@ -104,8 +104,9 @@ class RegisterStaffForm(Form):
     )
 
 class LoginForm(Form):
-    name = TextField('Username', validators=[DataRequired()])
+    username = TextField('Email or Username(staff only)', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
+    usrtype = SelectField('User Type', choices=[('customer', 'Customer'), ('agent', 'Booking Agent'), ('staff', 'Staff')], validators=[DataRequired()])
 
 
 class ForgotForm(Form):

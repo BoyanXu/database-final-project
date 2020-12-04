@@ -12,7 +12,9 @@ import pymysql.cursors
 
 from appconf import app, conn
 
+# route modules
 import register
+import login
 
 import logging
 from logging import Formatter, FileHandler
@@ -55,24 +57,6 @@ def home():
 def about():
     return render_template('pages/placeholder.about.html')
 
-#Login page
-@app.route('/login', methods=['GET'])
-def login():
-    form = LoginForm(request.form)
-    return render_template('forms/login.html', form=form)
-
-#Login Authentication
-@app.route('/login/auth', methods=['GET', 'POST'])
-def loginAuth():
-    form = LoginForm(request.form)
-    print(form.name)
-    return render_template('pages/placeholder.home.html')
-
-@app.route('/register')
-def register():
-    form = RegisterForm(request.form)
-    return render_template('forms/register.html', form=form)
-
 
 @app.route('/forgot')
 def forgot():
@@ -109,4 +93,5 @@ if not app.debug:
 # Default port:
 if __name__ == '__main__':
     app.run()
-    app.run(host='127.0.0.1', port=5000, debug = True)
+    app.run(host='127.0.0.1', port=5000, debug = True
+)
