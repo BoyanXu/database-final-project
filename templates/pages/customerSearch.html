@@ -1,0 +1,50 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Customer {{username}}'s Search Page</h1>
+</div>
+
+<form class="form" method="POST" action="/customerHome/search/results">
+  <h3 class="form-heading">
+    Search Filter
+  </h3>
+
+  {{ form.fromCity(class_ = 'form-control first-input', placeholder = form.fromCity.label.text, required = true, autofocus = true) }}
+  {{ form.fromAirport(class_ = 'form-control last-input', placeholder = form.fromAirport.label.text, required = true) }}
+  {{ form.fromDate(class_ = 'form-control last-input', placeholder = form.fromDate.label.text, required = true) }}
+  {{ form.toCity(class_ = 'form-control last-input', placeholder = form.toCity.label.text, required = true) }}
+  {{ form.toAirport(class_ = 'form-control last-input', placeholder = form.toAirport.label.text, required = true) }}
+  {{ form.toDate(class_ = 'form-control last-input', placeholder = form.toDate.label.text, required = true) }}
+
+  <input type="submit" value="Search Flight" class="btn btn-primary btn-lg btn-block" >
+
+</form>
+
+<div>
+  <h3>Search Results will be listed below</h3>
+
+  {% if results %}
+    {% for line in results %}
+    <tr>
+      <td>{{line.airline_name}}</td>
+      <td>{{line.flight_num}}</td>
+      <td>{{line.departure_airport}}</td>
+      <td>{{line.departure_time}}</td>
+      <td>{{line.arrival_airport}}</td>
+      <td>{{line.arrival_time}}</td>
+      <td>{{line.price}}</td>
+      <td>{{line.status}}</td>
+      <td>{{line.airplane_id}}</td>
+    </tr>
+    {% endfor %}
+  {% endif %}
+
+  {% if error %}
+      <p class="error"><strong>Error:</strong> {{error}}</p>
+  {% endif %}
+
+</div>
+
+{% endblock %}

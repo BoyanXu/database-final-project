@@ -1,0 +1,39 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Customer {{username}}'s Homepage</h1>
+</div>
+<div>
+  <h3>My Upcoming Flight(s)</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Ticket ID</th>
+        <th scope="col">Flight</th>
+        <th scope="col">Departure Airport</th>
+        <th scope="col">Departure Time</th>
+        <th scope="col">Arrival Airport</th>
+        <th scope="col">Arrival Time</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for line in posts %}
+    <tr scope="row">
+      <td>{{line.ticket_id}}</td>
+      <td>{{line.airline_name}} {{line.flight_num}}</td>
+      <td>{{line.departure_airport}}</td>
+      <td>{{line.departure_time}}</td>
+      <td>{{line.arrival_airport}}</td>
+      <td>{{line.arrival_time}}</td>
+    </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+  <p class="pull-left"><a href="{{ url_for('customerSearch') }}">Search for Flight</a></p>
+  <p class="pull-right"><a href="{{ url_for('customerPurchase') }}">Buy a Ticket</a></p>
+
+</div>
+
+{% endblock %}
