@@ -15,6 +15,9 @@ from appconf import app, conn
 # route modules
 import register
 import login
+import customer
+import agent
+import staff
 
 import logging
 from logging import Formatter, FileHandler
@@ -37,7 +40,7 @@ import os
 conn = pymysql.connect(host='127.0.0.1',
                        user='root',
                        password='', # password for XMAPP
-                       db='university',
+                       db='airline_service_db',
                        # port=5000,
                        unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
                        charset='utf8mb4',
@@ -58,13 +61,21 @@ def about():
     return render_template('pages/placeholder.about.html')
 
 
+@app.route('/logout')
+def logout():
+    session.pop('username')
+    return redirect('/login')
+
+
 @app.route('/forgot')
 def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
 # Error handlers.
-
+@app.route('/index')
+def index():
+    return render_template('pages/placeholder.index.html')
 
 @app.errorhandler(500)
 def internal_error(error):

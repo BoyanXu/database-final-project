@@ -19,11 +19,11 @@ def loginAuth():
     usrtype  = request.form['usrtype']
 
     if usrtype == 'customer':
-        query = 'SELECT * FROM customer WHERE email = %s and password = %s'
+        query = 'SELECT * FROM customer WHERE email = %s and password = md5(%s)'
     elif usrtype == 'agent':
-        query = 'SELECT * FROM booking_agent WHERE email = %s and password = %s'
+        query = 'SELECT * FROM booking_agent WHERE email = %s and password = md5(%s)'
     else:
-        query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
+        query = 'SELECT * FROM airline_staff WHERE username = %s and password = md5(%s)'
 
     cursor = conn.cursor()
     cursor.execute(query, (username, password))
@@ -35,8 +35,8 @@ def loginAuth():
     error = None
     if(data):
         #creates a session for the the user
-        #session is a built in  
-        session['username'] = username
+        #session is a built in
+        session['username'] = username # Use primary-key
         if usrtype == 'staff':
             return redirect(url_for('staffHome'))
         elif usrtype == 'customer':

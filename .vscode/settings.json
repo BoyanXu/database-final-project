@@ -1,3 +1,7 @@
 {
-    "python.pythonPath": "env/bin/python"
+  "python.pythonPath": "env/bin/python",
+  "files.exclude": {
+    "requirements.txt": true,
+    "README.md": true
+  }
 }
