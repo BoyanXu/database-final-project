@@ -61,7 +61,7 @@ def publicSearch():
     form = FlightSearchForm(request.form)
     return render_template('pages/publicSearch.html', form=form)
 
-@app.route('/searchResult', methods=['GET', 'POST'])
+@app.route('/search/result', methods=['GET', 'POST'])
 def publicSearchResult():
     fromCity = request.form['fromCity']
     fromAirport = request.form['fromAirport']
