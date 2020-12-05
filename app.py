@@ -55,6 +55,61 @@ conn = pymysql.connect(host='127.0.0.1',
 def home():
     return render_template('pages/placeholder.home.html')
 
+@app.route('/search', methods=['GET'])
+def publicSearch():
+    username = session["username"]
+    form = FlightSearchForm(request.form)
+    return render_template('pages/publicSearch.html', form=form)
+
+@app.route('/searchResult', methods=['GET', 'POST'])
+def publicSearchResult():
+    fromCity = request.form['fromCity']
+    fromAirport = request.form['fromAirport']
+    fromDate = request.form['fromDate']
+    toCity = request.form['toCity']
+    toAirport = request.form['toAirport']
+    toDate = request.form['toDate']
+    query = """SELECT distinct f.airline_name,
+                f.flight_num,
+                departure_airport,
+                departure_time,
+                arrival_airport,
+                arrival_time,
+                price,
+                airplane_id
+                    FROM flight as f, airport
+                    WHERE airport.airport_name=f.departure_airport
+                    AND airport.airport_city = %s
+                    AND airport.airport_name = %s
+                    AND %s BETWEEN DATE_SUB(f.departure_time, INTERVAL 2 DAY) AND DATE_ADD(f.departure_time, INTERVAL 2 DAY)
+                    AND %s BETWEEN DATE_SUB(f.arrival_time, INTERVAL 2 DAY) AND DATE_ADD(f.arrival_time, INTERVAL 2 DAY)
+                    AND (f.airline_name, f.flight_num) in
+                        (SELECT flight.airline_name, flight.flight_num FROM flight, airport
+                            WHERE airport.airport_name=flight.arrival_airport
+                            AND airport.airport_city = %s
+                            AND airport.airport_name = %s)
+                    AND (SELECT DISTINCT seats FROM flight, airplane
+                            WHERE flight.airplane_id = airplane.airplane_id
+                            AND flight.airline_name = airplane.airline_name
+                            AND flight.airline_name = f.airline_name
+                            AND flight.flight_num = f.flight_num) >=
+                                (SELECT COUNT(*) FROM ticket
+                                    WHERE ticket.airline_name = f.airline_name
+                                    AND ticket.flight_num = f.flight_num)
+    """
+
+    cursor = conn.cursor()
+    cursor.execute(query, (fromCity, fromAirport, fromDate, toDate, toCity, toAirport))
+    data = cursor.fetchall()
+    cursor.close()
+
+    if(data):
+        form = FlightSearchForm(request.form)
+        return render_template('pages/publicSearch.html', form=form, results=data)
+    else:
+        form = FlightSearchForm(request.form)
+        error = 'No results found'
+        return render_template('pages/publicSearch.html', form=form, error=error)
 
 @app.route('/about')
 def about():
