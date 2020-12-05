@@ -8,7 +8,7 @@ from forms import *
 def customerHome():
     username = session["username"]
 
-    query = """
+    query = """ 
                 SELECT purchases.ticket_id,
                 ticket.airline_name,
                 ticket.flight_num,

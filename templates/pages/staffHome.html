@@ -1,0 +1,43 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Staff {{username}}'s Homepage</h1>
+</div>
+<div>
+  <h3>My Airline's Flight(s)</h3>
+  
+   <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Airline Name</th>
+        <th scope="col">Flight Number</th>
+        <th scope="col">Departure Airport</th>
+        <th scope="col">Departure Time</th>
+        <th scope="col">Arrival Airport</th>
+        <th scope="col">Arrival Time</th>
+        <th scope="col">Price</th>
+        <th scope="col">Status</th>
+        <th scope="col">airplane_id</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for line in data %}
+    <tr>
+      <td>{{line.airline_name}}</td>
+      <td>{{line.flight_num}}</td>
+      <td>{{line.departure_airport}}</td>
+      <td>{{line.departure_time}}</td>
+      <td>{{line.arrival_airport}}</td>
+      <td>{{line.arrival_time}}</td>
+      <td>{{line.price}}</td>
+      <td>{{line.status}}</td>
+      <td>{{line.airplane_id}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+</div>
+
+{% endblock %}

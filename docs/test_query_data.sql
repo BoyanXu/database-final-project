@@ -17,10 +17,12 @@ SELECT purchases.ticket_id,
               AND departure_time > curdate()
 
 
--- @app.route("/customerSearch")
 
+-- @app.route("/customerSearch")
 -- Query Format: fromCity,      fromAirport, fromDate,   toDate,     toCity,        toAirport
--- Query Input : San Francisco, SFO,         2020-12-20, 2020-12-21, New York City, JFK
+-- Query Input: San Francisco, SFO,         2020-12-20, 2020-12-21, New York City, JFK
+-- Response Format: airline_name, flight_num, departure_airport, departure_time, arrival_airport, airplane_id, arrival_time, price
+-- Response Data  : Jet Blue,     139,        SFO,               2020-12-20,     JFK,             2020-12-21
 SELECT distinct f.airline_name,
                 f.flight_num,
                 departure_airport,
@@ -48,5 +50,17 @@ SELECT distinct f.airline_name,
                         (SELECT COUNT(*) FROM ticket
                             WHERE ticket.airline_name = f.airline_name
                               AND ticket.flight_num = f.flight_num)
--- Response Format: airline_name, flight_num,  departure_airport, departure_time, arrival_airport, airplane_id, arrival_time, price
--- Response Record: Jet Blue,     139,         SFO,               2020-12-20,     JFK,             2020-12-21
+
+
+-- app.route("/staffHome")
+-- Query Format: airline_name
+-- Query Input: Jet Blue
+-- Response Format: airline_name,  flight_num,  departure_airport,  departure_time,  arrival_airport,  arrival_time,  price,  status,  airplane_id
+-- Response Data: ..
+SELECT * FROM flight
+  WHERE  airline_name = 'Jet Blue'
+    AND (
+          ( departure_time BETWEEN Curdate() AND Date_add(Curdate(), interval 30 day) )
+          OR
+          ( arrival_time BETWEEN Curdate() AND Date_add(Curdate(), interval 30 day) )
+        )

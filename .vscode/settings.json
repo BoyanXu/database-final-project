@@ -1,6 +1,13 @@
 {
   "python.pythonPath": "env/bin/python",
   "files.exclude": {
-    "requirements.txt": true
+    "requirements.txt": true,
+    "README.md": true,
+    "_updated": true,
+    "__pycache__": true,
+    ".vscode": true,
+    "env": true,
+    ".gitignore": true,
+    ".gitattributes": true
   }
 }
