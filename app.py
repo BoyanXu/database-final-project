@@ -57,7 +57,6 @@ def home():
 
 @app.route('/search', methods=['GET'])
 def publicSearch():
-    username = session["username"]
     form = FlightSearchForm(request.form)
     return render_template('pages/publicSearch.html', form=form)
 
