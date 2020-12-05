@@ -64,52 +64,38 @@ class RegisterCustomerForm(Form):
     )
 
 class RegisterAgentForm(Form):
-    email = TextField(
-        'Email', validators=[DataRequired(), Length(max=40)]
-    )
-    password = PasswordField(
-        'Password', validators=[DataRequired(), Length(max=50)]
-    )
-    confirm = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')]
-    )
-    booking_agent_id = IntegerField(
-        'Booking Agent ID', validators=[DataRequired(), Length(max=11)]
-    )
+    email            = TextField('Email', validators=[DataRequired(), Length(max=40)])
+    password         = PasswordField('Password', validators=[DataRequired(), Length(max=50)])
+    confirm          = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
+    booking_agent_id = IntegerField('Booking Agent ID', validators=[DataRequired(), Length(max=11)])
 
 class RegisterStaffForm(Form):
-    username = TextField(
-        'Username', validators=[DataRequired(), Length(max=25)]
-    )
-    email = TextField(
-        'Email', validators=[DataRequired(), Length(max=40)]
-    )
-    password = PasswordField(
-        'Password', validators=[DataRequired(), Length(max=50)]
-    )
-    confirm = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')]
-    )
-    firstName = TextField(
-        'First Name', validators=[DataRequired()]
-    )
-    lastName = TextField(
-        'Last Name', validators=[DataRequired()]
-    )
-    birth = DateField(
-        'Birthday', validators=[DataRequired()], format = '%Y-%m-%d'
-    )
-    airline = TextField(
-        'Airline Name', validators=[DataRequired()]
-    )
+    username  = TextField('Username', validators=[DataRequired(), Length(max=25)])
+    email     = TextField('Email', validators=[DataRequired(), Length(max=40)])
+    password  = PasswordField('Password', validators=[DataRequired(), Length(max=50)])
+    confirm   = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
+    firstName = TextField('First Name', validators=[DataRequired()])
+    lastName  = TextField('Last Name', validators=[DataRequired()])
+    birth     = DateField('Birthday', validators=[DataRequired()], format = '%Y-%m-%d')
+    airline   = TextField('Airline Name', validators=[DataRequired()])
 
 class LoginForm(Form):
     username = TextField('Email or Username(staff only)', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    usrtype = SelectField('User Type', choices=[('customer', 'Customer'), ('agent', 'Booking Agent'), ('staff', 'Staff')], validators=[DataRequired()])
+    usrtype  = SelectField('User Type', choices=[('customer', 'Customer'), ('agent', 'Booking Agent'), ('staff', 'Staff')], validators=[DataRequired()])
 
 
 class ForgotForm(Form):
-    email = TextField(
-        'Email', validators=[DataRequired(), Length(min=6, max=40)]
-    )
+    email = TextField('Email', validators=[DataRequired(), Length(min=6, max=40)])
+
+class PurchaseForm(Form):
+    airlineName  = TextField("Airline Name", validators=[DataRequired()])
+    flightNumber = IntegerField("Flight Number", validators=[DataRequired()])
+
+class FlightSearchForm(Form):
+    fromCity    = TextField("From City", validators=[DataRequired()])
+    fromAirport = TextField("From Airport", validators=[DataRequired()])
+    fromDate    = DateField("From Date", validators=[DataRequired()])
+    toCity      = TextField("To City", validators=[DataRequired()])
+    toAirport   = TextField("To Airport", validators=[DataRequired()])
+    toDate      = DateField("To Date", validators=[DataRequired()])

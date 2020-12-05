@@ -1,8 +1,8 @@
-from forms import *
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 
 from appconf import app, conn
+from forms import *
 
 #Login page
 @app.route('/login', methods=['GET'])
