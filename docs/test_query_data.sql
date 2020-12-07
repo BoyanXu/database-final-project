@@ -64,3 +64,24 @@ SELECT * FROM flight
           OR
           ( arrival_time BETWEEN Curdate() AND Date_add(Curdate(), interval 30 day) )
         )
+
+-- app.route("/customerHome/purchase/status")
+-- Query Format: airline_name, flight_num
+-- Query Input: Jet Blue,
+SELECT COUNT(*) AS count FROM ticket
+  WHERE ticket.airline_name = 'Jet Blue' AND ticket.flight_num = '915'
+-- Response Format: count
+-- Response Data: 3
+
+
+-- app.route("/customerHome/purchase/status")
+  -- Query Format: airline_name, flight_num
+  -- Query Input: Jet Blue, 915
+  SELECT MAX(ticket_id) + 1 as nxt_ticket_id FROM ticket
+    WHERE (SELECT COUNT(*) as count FROM ticket
+            WHERE ticket.airline_name = 'Jet Blue' AND ticket.flight_num = '915'
+          ) < (SELECT airplane.seats as seats FROM flight, airplane
+                WHERE flight.airline_name = 'Jet Blue' AND flight.flight_num = '915'
+                  AND flight.airplane_id = airplane.airplane_id)
+  -- Response Format: nxt_ticket_id
+  -- Response Data: 10  (NULL if unsatisfied)

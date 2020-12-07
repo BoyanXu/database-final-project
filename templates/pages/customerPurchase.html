@@ -6,7 +6,7 @@
   <h1>Customer {{username}}'s Purchase Page</h1>
 </div>
 
-<form class="form" method="POST" action="/index">
+<form class="form" method="POST" action="/customerHome/purchase/status">
   <h3 class="form-heading">
     Purchase through Airline Name & Flight Number
   </h3>
@@ -16,6 +16,17 @@
 
   <input type="submit" value="Submit Order" class="btn btn-primary btn-lg btn-block" >
 
+  <p class="pull-left"><a href="{{ url_for('customerHome') }}">Go to homegape</a></p>
+  <p class="pull-right"><a href="{{ url_for('customerSearch') }}">Search for Flight</a></p>
+
 </form>
+
+{% if error %}
+    <p class="alert alert-danger" role="alert"><strong>Error:</strong> {{error}}</p>
+{% endif %}
+
+{% if myTicket %}
+  <p class="alert alert-success" role="alert"><strong>Success:</strong> Your ticket_id is: {{myTicket}}</p>
+{% endif %}
 
 {% endblock %}

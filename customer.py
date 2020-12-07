@@ -8,17 +8,17 @@ from forms import *
 def customerHome():
     username = session["username"]
 
-    query = """ 
+    query = """
                 SELECT purchases.ticket_id,
-                ticket.airline_name,
-                ticket.flight_num,
-                flight.departure_airport,
-                flight.departure_time,
-                flight.arrival_airport,
-                flight.arrival_time,
-                flight.price,
-                flight.status,
-                flight.airplane_id
+                    ticket.airline_name,
+                    ticket.flight_num,
+                    flight.departure_airport,
+                    flight.departure_time,
+                    flight.arrival_airport,
+                    flight.arrival_time,
+                    flight.price,
+                    flight.status,
+                    flight.airplane_id
                 FROM purchases, ticket, flight
                         WHERE purchases.customer_email = %s
                         AND purchases.ticket_id = ticket.ticket_id
@@ -39,6 +39,46 @@ def customerPurchase():
     username = session["username"]
     form = PurchaseForm(request.form)
     return render_template('pages/customerPurchase.html', username=username, form=form)
+
+@app.route("/customerHome/purchase/status", methods=["GET", "POST"])
+def customerPurchaseStatus():
+    username = session["username"]
+    airlineName = request.form['airlineName']
+    flightNumber = request.form['flightNumber']
+
+    cursor = conn.cursor()
+    query = """
+            SELECT MAX(ticket_id) + 1 as nxt_ticket_id FROM ticket
+                WHERE (SELECT COUNT(*) as count FROM ticket
+                        WHERE ticket.airline_name = %s AND ticket.flight_num = %s
+                    ) < (SELECT airplane.seats as seats FROM flight, airplane
+                            WHERE flight.airline_name = %s AND flight.flight_num = %s
+                            AND flight.airplane_id = airplane.airplane_id)
+            """
+    cursor.execute(query, (airlineName, flightNumber, airlineName, flightNumber))
+    data = cursor.fetchone()
+
+    if data['nxt_ticket_id'] is None:
+        cursor.close()
+        error = "Purchase Failed, make sure you typed the name correctly and the flight has enough seat"
+        form  = PurchaseForm(request.form)
+        return render_template('pages/customerPurchase.html', username=username, form=form, error=error)
+    else:
+        nxt_ticket_id = data['nxt_ticket_id']
+        queryInsertTicket = """
+                            INSERT INTO ticket VALUES(%s, %s, %s)
+                            """
+        cursor.execute(queryInsertTicket, (nxt_ticket_id, airlineName, flightNumber))
+        queryInsertPurchase ="""
+                                INSERT INTO purchases VALUES(%s, %s, %s, CURDATE())
+                                """
+        cursor.execute(queryInsertPurchase, (nxt_ticket_id, username, None))
+        data = cursor.fetchone()
+        conn.commit()
+        cursor.close()
+
+        form  = PurchaseForm(request.form)
+        return render_template('pages/customerPurchase.html', username=username, form=form, results=data, myTicket=nxt_ticket_id)
 
 
 @app.route('/customerHome/search', methods=['GET'])

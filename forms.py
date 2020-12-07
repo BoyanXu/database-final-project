@@ -90,7 +90,7 @@ class ForgotForm(Form):
 
 class PurchaseForm(Form):
     airlineName  = TextField("Airline Name", validators=[DataRequired()])
-    flightNumber = IntegerField("Flight Number", validators=[DataRequired()])
+    flightNumber = TextField("Flight Number", validators=[DataRequired()])
 
 class FlightSearchForm(Form):
     fromCity    = TextField("From City", validators=[DataRequired()])
