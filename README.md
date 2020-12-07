@@ -94,10 +94,15 @@ Project Structure
     │   ├── form.html
     │   └── main.html
     └── pages
+        ├── agentHome.html
         ├── customerHome.html
         ├── customerPurchase.html
         ├── customerSearch.html
         ├── placeholder.about.html
         ├── placeholder.home.html
-        └── publicSearch.html
+        ├── publicSearch.html
+        ├── staffCreateAirplane.html
+        ├── staffCreateAirport.html
+        ├── staffCreateFlight.html
+        └── staffHome.html
   ```
