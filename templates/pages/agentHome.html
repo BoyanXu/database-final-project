@@ -1,0 +1,52 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Agent {{username}}'s Homepage</h1>
+</div>
+<div>
+  <h3>My clients' Upcoming Flight(s)</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Ticket ID</th>
+        <th scope="col">Airline Name</th>
+        <th scope="col">Flight Number</th>
+        <th scope="col">Departure Airport</th>
+        <th scope="col">Departure Time</th>
+        <th scope="col">Arrival Airport</th>
+        <th scope="col">Arrival Time</th>
+        <th scope="col">Airplain ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Price</th>
+        <th scope="col">Customer Email</th>
+        <th scope="col">Booking Agent ID</th>
+        <th scope="col">Purchase Date</th>
+
+      </tr>
+    </thead>
+    <tbody>
+    {% for line in data %}
+    <tr scope="row">
+      <td>{{line.ticket_id}}</td>
+      <td>{{line.airline_name}}</td>
+      <td>{{line.flight_num}}</td>
+      <td>{{line.departure_airport}}</td>
+      <td>{{line.departure_time}}</td>
+      <td>{{line.arrival_airport}}</td>
+      <td>{{line.arrival_time}}</td>
+      <td>{{line.airplane_id}}</td>
+      <td>{{line.status}}</td>
+      <td>{{line.price}}</td>
+      <td>{{line.customer_email}}</td>
+      <td>{{line.booking_agent_id}}</td>
+      <td>{{line.purchase_date}}</td>
+    </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+
+</div>
+
+{% endblock %}

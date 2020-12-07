@@ -75,13 +75,32 @@ SELECT COUNT(*) AS count FROM ticket
 
 
 -- app.route("/customerHome/purchase/status")
-  -- Query Format: airline_name, flight_num
-  -- Query Input: Jet Blue, 915
-  SELECT MAX(ticket_id) + 1 as nxt_ticket_id FROM ticket
-    WHERE (SELECT COUNT(*) as count FROM ticket
-            WHERE ticket.airline_name = 'Jet Blue' AND ticket.flight_num = '915'
-          ) < (SELECT airplane.seats as seats FROM flight, airplane
-                WHERE flight.airline_name = 'Jet Blue' AND flight.flight_num = '915'
-                  AND flight.airplane_id = airplane.airplane_id)
-  -- Response Format: nxt_ticket_id
-  -- Response Data: 10  (NULL if unsatisfied)
+-- Query Format: airline_name, flight_num
+-- Query Input: Jet Blue, 915
+SELECT MAX(ticket_id) + 1 as nxt_ticket_id FROM ticket
+  WHERE (SELECT COUNT(*) as count FROM ticket
+          WHERE ticket.airline_name = 'Jet Blue' AND ticket.flight_num = '915'
+        ) < (SELECT airplane.seats as seats FROM flight, airplane
+              WHERE flight.airline_name = 'Jet Blue' AND flight.flight_num = '915'
+                AND flight.airplane_id = airplane.airplane_id)
+-- Response Format: nxt_ticket_id
+-- Response Data: 10  (NULL if unsatisfied)
+
+
+
+
+-- app.route("/agentHome")
+-- Query Format: agentID
+-- Query Input: Booking@agent.com,
+SELECT ticket.ticket_id, ticket.airline_name, ticket.flight_num,
+        departure_airport, departure_time, arrival_airport, arrival_time, airplane_id, status,
+        price, customer_email, purchases.booking_agent_id, purchase_date
+ FROM purchases, ticket, flight, booking_agent
+  WHERE purchases.ticket_id = ticket.ticket_id
+    AND ticket.airline_name = flight.airline_name
+    AND ticket.flight_num   = flight.flight_num
+    AND booking_agent.email = 'Booking@agent.com'
+    AND booking_agent.booking_agent_id = purchases.booking_agent_id
+    AND departure_time > curdate() ORDER BY customer_email
+-- Response Format: ticket_id, airline_name, flight_num, departure_airport, departure_time, arrival_airport, arrival_time, airplane_id, status, price, customer_email, booking_agent_id, purchase_date
+-- Response Data: ...
