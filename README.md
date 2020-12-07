@@ -44,41 +44,6 @@ Project Structure
 ├── register.py
 ├── requirements.txt
 ├── staff.py
-├── static
-│   ├── css
-│   │   ├── bootstrap-3.1.1.min.css
-│   │   ├── bootstrap-theme-3.1.1.css
-│   │   ├── bootstrap-theme-3.1.1.min.css
-│   │   ├── bootstrap-theme.css.map
-│   │   ├── bootstrap.css.map
-│   │   ├── font-awesome-4.1.0.min.css
-│   │   ├── layout.forms.css
-│   │   ├── layout.main.css
-│   │   ├── main.css
-│   │   ├── main.quickfix.css
-│   │   └── main.responsive.css
-│   ├── fonts
-│   │   ├── FontAwesome.otf
-│   │   ├── fontawesome-webfont.eot
-│   │   ├── fontawesome-webfont.svg
-│   │   ├── fontawesome-webfont.ttf
-│   │   └── fontawesome-webfont.woff
-│   ├── ico
-│   │   ├── apple-touch-icon-114-precomposed.png
-│   │   ├── apple-touch-icon-144-precomposed.png
-│   │   ├── apple-touch-icon-57-precomposed.png
-│   │   ├── apple-touch-icon-72-precomposed.png
-│   │   └── favicon.png
-│   ├── img
-│   └── js
-│       ├── libs
-│       │   ├── bootstrap-3.1.1.min.js
-│       │   ├── jquery-1.11.1.min.js
-│       │   ├── jquery-1.11.1.min.map
-│       │   ├── modernizr-2.8.2.min.js
-│       │   └── respond-1.4.2.min.js
-│       ├── plugins.js
-│       └── script.js
 └── templates
     ├── errors
     │   ├── 404.html
