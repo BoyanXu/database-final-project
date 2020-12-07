@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms import TextField, PasswordField, IntegerField, SelectField
-from wtforms.fields.html5 import DateField
+from wtforms.fields.html5 import DateField, DateTimeLocalField
 from wtforms.validators import DataRequired, EqualTo, Length
 
 # Set your classes here.
@@ -99,3 +99,21 @@ class FlightSearchForm(Form):
     toCity      = TextField("To City", validators=[DataRequired()])
     toAirport   = TextField("To Airport", validators=[DataRequired()])
     toDate      = DateField("To Date", validators=[DataRequired()])
+
+class CreateFlightForm(Form):
+    # airlineName  = TextField("Airline Name", validators=[DataRequired()])  <- use getAirlineName() instead of input it
+    flightNumber = TextField("Flight Number", validators=[DataRequired()])
+    fromAirport  = TextField("From Airport", validators=[DataRequired()])
+    fromDateTime = DateTimeLocalField("From Date Time", validators=[DataRequired()])
+    toAirport    = TextField("To Airport", validators=[DataRequired()])
+    toDateTime   = DateTimeLocalField("To Date Time", validators=[DataRequired()])
+    price        = TextField("Price", validators=[DataRequired()]) # <- Integer check
+    airplane_id  = TextField("Airplane ID", validators=[DataRequired()])
+
+class CreateAirplaneForm(Form):
+    airplane_id = TextField("Airplane ID", validators=[DataRequired()])
+    seats       = TextField("Seats Capacity", validators=[DataRequired()])
+
+class CreateAirportForm(Form):
+    name = TextField("Airport Name", validators=[DataRequired()])
+    city = TextField("Airport City", validators=[DataRequired()])

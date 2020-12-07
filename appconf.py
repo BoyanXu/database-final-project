@@ -22,6 +22,6 @@ conn = pymysql.connect(host='127.0.0.1',
 
 #Check that the two dates don't overlap
 def validateDates(begintime, endtime):
-    begindate = datetime.datetime.strptime(begintime, '%Y-%m-%dT%H:%M:%S')
-    enddate = datetime.datetime.strptime(endtime, '%Y-%m-%dT%H:%M:%S')
+    begindate = datetime.datetime.strptime(begintime, '%Y-%m-%dT%H:%M')
+    enddate = datetime.datetime.strptime(endtime, '%Y-%m-%dT%H:%M')
     return begindate <= enddate

@@ -2,11 +2,11 @@ from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 import datetime
 
-from appconf import app, conn
+from appconf import app, conn, validateDates
 from forms import *
 
 
-def getAirlineName(username):
+def getStaffAirline(username):
     cursor = conn.cursor()
     query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
@@ -14,11 +14,24 @@ def getAirlineName(username):
     cursor.close()
     return data['airline_name']
 
+def authorizeStaffSession():
+    username = session['username']
+    query = 'SELECT * from airline_staff WHERE username=%s'
+    cursor = conn.cursor()
+    cursor.execute(query, (username))
+    data = cursor.fetchall()
+    cursor.close()
+    if data:
+        return True
+    else:
+        session.pop('username')
+        return False
+
 
 @app.route('/staffHome')
 def staffHome():
     username = session['username']
-    airlineName = getAirlineName(username)
+    airlineName = getStaffAirline(username)
 
     cursor = conn.cursor()
     query = """SELECT * FROM flight
@@ -33,3 +46,100 @@ def staffHome():
     data = cursor.fetchall()
     cursor.close()
     return render_template("pages/staffHome.html", username=username, data=data)
+
+@app.route("/staffHome/createFlight", methods=["GET"])
+def staffCreateFlight():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+    form = CreateFlightForm(request.form)
+    return render_template("pages/staffCreateFlight.html", username=username, form=form)
+
+@app.route("/staffHome/createFlight/status", methods=["GET", "POST"])
+def staffCreateFlightStatus():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+
+    username     = session["username"]
+    airline      = getStaffAirline(username)
+    flightNumber = request.form['flightNumber']
+    fromAirport  = request.form['fromAirport']
+    fromDateTime = request.form['fromDateTime']
+    toAirport    = request.form['toAirport']
+    toDateTime   = request.form['toDateTime']
+    price        = request.form['price']
+    status       = 'Upcoming'
+    airplane_id  = request.form['airplane_id']
+
+    if not validateDates(fromDateTime, toDateTime):
+        form  = CreateFlightForm(request.form)
+        return render_template("pages/staffCreateFlight.html", username=username, form=form, error="Invalid Time Interval")
+
+    cursor = conn.cursor()
+    query = """
+            INSERT INTO flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+    cursor.execute(query, (airline, flightNumber, fromAirport, fromDateTime, toAirport, toDateTime, price, status, airplane_id))
+
+    data = cursor.fetchone()
+    conn.commit()
+    cursor.close()
+
+    form  = CreateFlightForm(request.form)
+    return render_template("pages/staffCreateFlight.html", username=username, form=form, success="Flight Inserted successfully")
+
+@app.route("/staffHome/createAirplane", methods=["GET"])
+def staffCreateAirplane():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+    form = CreateAirplaneForm(request.form)
+    return render_template("pages/staffCreateAirplane.html", username=username, form=form)
+
+@app.route("/staffHome/createAirplane/status", methods=["GET", "POST"])
+def staffCreateAirplaneStatus():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+
+    airline = getStaffAirline(username)
+    airplane_id = request.form['airplane_id']
+    seats = request.form['seats']
+
+    cursor = conn.cursor()
+    query = """
+            INSERT INTO airplane VALUES(%s, %s, %s)  """
+    cursor.execute(query, (airline, airplane_id, seats))
+
+    data = cursor.fetchone()
+    conn.commit()
+    cursor.close()
+    form = CreateAirplaneForm(request.form)
+    # TODO Handle airplane duplication
+    return render_template("pages/staffCreateAirplane.html", username=username, form=form, success="Airplane Inserted successfully")
+
+@app.route("/staffHome/createAirport", methods=["GET"])
+def staffCreateAirport():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+    form = CreateAirportForm(request.form)
+    return render_template("pages/staffCreateAirport.html", username=username, form=form)
+
+@app.route("/staffHome/createAirport/status", methods=["GET", "POST"])
+def staffCreateAirportStatus():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+    name = request.form['name']
+    city = request.form['city']
+
+    cursor = conn.cursor()
+    query = """
+            INSERT INTO airport VALUES (%s, %s) """
+    cursor.execute(query, (name, city))
+    conn.commit()
+    cursor.close()
+
+    form = CreateAirportForm(request.form)
+    return render_template("pages/staffCreateAirport.html", username=username, form=form, success="Airport Inserted successfully")

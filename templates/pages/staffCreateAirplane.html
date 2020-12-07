@@ -1,0 +1,30 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Staff {{username}}'s Create Airplane Page</h1>
+</div>
+
+<form class="form" method="POST" action="/staffHome/createAirplane/status">
+  <h3 class="form-heading">
+    Create Airplane with following information
+  </h3>
+
+  {{ form.airplane_id(class_ = 'form-control first-input', placeholder = form.airplane_id.label.text, required = true, autofocus = true) }}
+  {{ form.seats(class_ = 'form-control last-input', placeholder = form.seats.label.text, required = true) }}
+
+  <input type="submit" value="Create Airplane" class="btn btn-primary btn-lg btn-block" >
+
+  <p class="pull-left"><a href="{{ url_for('staffHome') }}">Go to homegape</a></p>
+</form>
+
+{% if error %}
+    <p class="alert alert-danger" role="alert"><strong>Error:</strong> {{error}}</p>
+{% endif %}
+
+{% if success %}
+  <p class="alert alert-success" role="alert"><strong>Success:</strong> {{success}}</p>
+{% endif %}
+
+{% endblock %}

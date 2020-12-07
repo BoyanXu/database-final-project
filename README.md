@@ -11,7 +11,7 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 - [ ]  7. `Track my spending` (Customer, Booking agent)
 - [ ]  8. `View my commission` (Booking agent)
 - [ ]  9. `View top customers` (Booking agent)
-- [ ]  10. `View public info` (Anyone)
+- [x]  10. `View public info` (Anyone)
 - [ ]  11. `Create new flights` (Airline staff)
 - [ ]  12. `Change Status of flights` (Airline staff)
 - [ ]  13. `Add airplane in the system` (Airline staff)

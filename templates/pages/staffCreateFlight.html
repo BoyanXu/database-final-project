@@ -1,0 +1,35 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Staff {{username}}'s Create Flight Page</h1>
+</div>
+
+<form class="form" method="POST" action="/staffHome/createFlight/status">
+  <h3 class="form-heading">
+    Create Flight with following information
+  </h3>
+
+  {{ form.flightNumber(class_ = 'form-control first-input', placeholder = form.flightNumber.label.text, required = true, autofocus = true) }}
+  {{ form.fromAirport(class_ = 'form-control', placeholder = form.fromAirport.label.text, required = true) }}
+  {{ form.fromDateTime(class_ = 'form-control', placeholder = form.fromDateTime.label.text, required = true) }}
+  {{ form.toAirport(class_ = 'form-control', placeholder = form.toAirport.label.text, required = true) }}
+  {{ form.toDateTime(class_ = 'form-control', placeholder = form.toDateTime.label.text, required = true) }}
+  {{ form.price(class_ = 'form-control', placeholder = form.price.label.text, required = true) }}
+  {{ form.airplane_id(class_ = 'form-control last-input', placeholder = form.airplane_id.label.text, required = true) }}
+
+  <input type="submit" value="Create Flight" class="btn btn-primary btn-lg btn-block" >
+
+  <p class="pull-left"><a href="{{ url_for('staffHome') }}">Go to homegape</a></p>
+</form>
+
+{% if error %}
+    <p class="alert alert-danger" role="alert"><strong>Error:</strong> {{error}}</p>
+{% endif %}
+
+{% if success %}
+  <p class="alert alert-success" role="alert"><strong>Success:</strong> {{success}}</p>
+{% endif %}
+
+{% endblock %}
