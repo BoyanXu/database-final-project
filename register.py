@@ -40,7 +40,14 @@ def registerCustomerAuth():
     passport_country = request.form['passportCountry']
     date_of_birth = request.form['birth']
 
-    return render_template('/home')
+    cursor = conn.cursor()
+    query = """INSERT INTO customer (`email`, `name`, `password`, `building_number`, `street`, `city`, `state`, `phone_number`, `passport_number`, `passport_expiration`, `passport_country`, `date_of_birth`)
+                VALUES (%s, %s, md5(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+    cursor.execute(query, (email, name, password, building_number, street, city, state, phone_number, passport_number, passport_expiration, passport_country, date_of_birth))
+    conn.commit()
+    cursor.close()
+    return redirect('/login')
 
 @app.route('/register/agent/auth', methods=['POST'])
 def registerAgentAuth():
@@ -48,15 +55,28 @@ def registerAgentAuth():
     password = request.form['password']
     booking_agent_id = request.form['booking_agent_id']
 
-    return render_template('/home')
+    cursor = conn.cursor()
+    query = """INSERT INTO booking_agent (`email`, `password`, `booking_agent_id`) VALUES (%s, md5(%s), %s)
+            """
+    cursor.execute(query, (email, password, booking_agent_id))
+    conn.commit()
+    cursor.close()
+    return redirect('/login')
 
 @app.route('/register/staff/auth', methods=['POST'])
 def registerStaffAuth():
     username = request.form['username']
     password = request.form['password']
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    date_of_birth = request.form['date_of_birth']
-    airline_name = request.form['airline_name']
+    firstName = request.form['firstName']
+    lastName = request.form['lastName']
+    date_of_birth = request.form['birth']
+    airline_name = request.form['airline']
 
-    return render_template('/home')
+    cursor = conn.cursor()
+    query = """INSERT INTO airline_staff (`username`, `password`, `first_name`, `last_name`, `date_of_birth`, `airline_name`)
+                VALUES (%s, md5(%s), %s, %s, %s, %s)
+            """
+    cursor.execute(query, (username, password, firstName, lastName, date_of_birth, airline_name))
+    conn.commit()
+    cursor.close()
+    return redirect('/login')

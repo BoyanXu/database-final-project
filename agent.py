@@ -16,7 +16,10 @@ def getCommission(username):
     cursor.execute(query, (username))
     data = cursor.fetchone()
     cursor.close()
-    return data['commission']
+    try:
+        return data['commission']
+    except:
+        return "Null"
 
 @app.route('/agentHome', methods=['GET', 'POST'])
 def agentHome():

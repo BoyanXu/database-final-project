@@ -20,7 +20,7 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 - [ ]  16. `View frequent customers` (Airline staff)
 - [ ]  17. `View reports` (Airline staff)
 - [ ]  18. `Comparison of revenue earned` (Airline staff)
-- [ ]  19. `View Top destinations` (Airline staff)
+- [x]  19. `View Top destinations` (Airline staff)
 
 
 Project Structure
