@@ -141,3 +141,12 @@ SELECT SUM(price) as commission
   JOIN flight USING(airline_name, flight_num)
     WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
       AND email='Booking@agent.com' GROUP by email
+
+-- app.route("/staffHome")
+-- Query Format: airline_name
+-- Query Input : Jet Blue
+SELECT airport_city, COUNT(ticket_id) as count FROM airport, ticket JOIN flight USING(airline_name, flight_num)
+    WHERE airport_name = arrival_airport
+    AND airline_name='Jet Blue' GROUP by airport_city ORDER by count DESC
+-- Response Format: airport_name, count
+

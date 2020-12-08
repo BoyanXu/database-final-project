@@ -14,6 +14,17 @@ def getStaffAirline(username):
     cursor.close()
     return data['airline_name']
 
+def getTopDestinations(airline):
+    cursor = conn.cursor()
+    query = """SELECT airport_city, COUNT(ticket_id) as count FROM airport, ticket JOIN flight USING(airline_name, flight_num)
+                    WHERE airport_name = arrival_airport
+                    AND airline_name=%s GROUP by airport_city ORDER by count DESC LIMIT 3
+            """
+    cursor.execute(query, (airline))
+    data = cursor.fetchall()
+    cursor.close()
+    return data
+
 def authorizeStaffSession():
     username = session['username']
     query = 'SELECT * from airline_staff WHERE username=%s'
@@ -57,8 +68,11 @@ def staffHome():
     data = cursor.fetchall()
     cursor.close()
 
+    topDestinations = getTopDestinations(airlineName)
+
     form = ChangeFlightForm(request.form)
-    return render_template("pages/staffHome.html", username=username, data=data, form=form)
+    return render_template("pages/staffHome.html", username=username, data=data,
+                           form=form, topDestinations=topDestinations)
 
 # @app.route("/staffHome/changeFlight", methods=["GET"])
 # def staffChangeFlight():
@@ -188,28 +202,28 @@ def staffViewAgentStatus():
                     FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
                     JOIN flight USING(airline_name, flight_num)
                         WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
-                        AND airline_name=%s GROUP BY email ORDER BY sale DESC
+                        AND airline_name=%s GROUP BY email ORDER BY sale DESC LIMIT 5
                 """
     elif criteria == "sale" and range == "month":
         query ="""SELECT email, COUNT(ticket_id) as sale
                     FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
                     JOIN flight USING(airline_name, flight_num)
                         WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
-                        AND airline_name=%s GROUP BY email ORDER BY sale DESC
+                        AND airline_name=%s GROUP BY email ORDER BY sale DESC LIMIT 5
                 """
     elif criteria == "commission" and range == "year":
         query = """SELECT email, SUM(price) as commission
                     FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
                     JOIN flight USING(airline_name, flight_num)
                         WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
-                        AND airline_name=%s GROUP by email ORDER by commission DESC
+                        AND airline_name=%s GROUP by email ORDER by commission DESC LIMIT 5
                 """
     elif criteria == "commission" and range == "month":
         query ="""SELECT email, SUM(price) as commission
                     FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
                     JOIN flight USING(airline_name, flight_num)
                         WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
-                        AND airline_name=%s GROUP by email ORDER by commission DESC
+                        AND airline_name=%s GROUP by email ORDER by commission DESC LIMIT 5
                 """
     cursor.execute(query, (airline))
     data = cursor.fetchall()
