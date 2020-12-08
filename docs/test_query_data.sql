@@ -104,3 +104,20 @@ SELECT ticket.ticket_id, ticket.airline_name, ticket.flight_num,
     AND departure_time > curdate() ORDER BY customer_email
 -- Response Format: ticket_id, airline_name, flight_num, departure_airport, departure_time, arrival_airport, arrival_time, airplane_id, status, price, customer_email, booking_agent_id, purchase_date
 -- Response Data: ...
+
+
+-- app.route("/staffHome/viewStaff/status")
+-- Query Format: airlineName, range
+-- Query Input: Jet Blue, MONTH
+SELECT email, COUNT(ticket_id) as sale
+  FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+  JOIN flight USING(airline_name, flight_num)
+    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+      AND airline_name='Jet Blue' GROUP BY email ORDER BY sale DESC
+-- Response Format:
+
+SELECT email, SUM(price) as commission
+  FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+  JOIN flight USING(airline_name, flight_num)
+    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+      AND airline_name='Jet Blue' GROUP by email ORDER by commission DESC

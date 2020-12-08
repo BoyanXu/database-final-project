@@ -117,3 +117,7 @@ class CreateAirplaneForm(Form):
 class CreateAirportForm(Form):
     name = TextField("Airport Name", validators=[DataRequired()])
     city = TextField("Airport City", validators=[DataRequired()])
+
+class ViewStaffForm(Form):
+    range    = SelectField('Time Range', choices=[('month', 'Past Month'), ('year', 'Past Year')], validators=[DataRequired()])
+    criteria = SelectField('Ranking Criteria', choices=[('sale', 'Ticket sales'), ('commission', 'Amount of commission')])

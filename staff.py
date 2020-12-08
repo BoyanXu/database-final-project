@@ -143,3 +143,57 @@ def staffCreateAirportStatus():
 
     form = CreateAirportForm(request.form)
     return render_template("pages/staffCreateAirport.html", username=username, form=form, success="Airport Inserted successfully")
+
+@app.route("/staffHome/viewAgent", methods=["GET"])
+def staffViewAgent():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+    form     = ViewStaffForm(request.form)
+    return render_template("pages/staffViewAgent.html", username=username, form=form)
+
+@app.route("/staffHome/viewAgent/status", methods=["GET", "POST"])
+def staffViewAgentStatus():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+    airline  = getStaffAirline(username)
+    range    = request.form['range']
+    criteria = request.form['criteria']
+    cursor = conn.cursor()
+
+    query = ""
+    if criteria == "sale" and range == "year":
+        query ="""SELECT email, COUNT(ticket_id) as sale
+                    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                    JOIN flight USING(airline_name, flight_num)
+                        WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+                        AND airline_name=%s GROUP BY email ORDER BY sale DESC
+                """
+    elif criteria == "sale" and range == "month":
+        query ="""SELECT email, COUNT(ticket_id) as sale
+                    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                    JOIN flight USING(airline_name, flight_num)
+                        WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
+                        AND airline_name=%s GROUP BY email ORDER BY sale DESC
+                """
+    elif criteria == "commission" and range == "year":
+        query = """SELECT email, SUM(price) as commission
+                    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                    JOIN flight USING(airline_name, flight_num)
+                        WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+                        AND airline_name=%s GROUP by email ORDER by commission DESC
+                """
+    elif criteria == "commission" and range == "month":
+        query ="""SELECT email, SUM(price) as commission
+                    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                    JOIN flight USING(airline_name, flight_num)
+                        WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
+                        AND airline_name=%s GROUP by email ORDER by commission DESC
+                """
+    cursor.execute(query, (airline))
+    data = cursor.fetchall()
+    cursor.close()
+
+    form = ViewStaffForm(request.form)
+    return render_template("pages/staffViewAgent.html", username=username, form=form, criteria=criteria, data=data)
