@@ -2,7 +2,7 @@
 This is the repo holds source code for the final project of Databases CSCI-SHU 213 2020 Fall
 ## Roadmap
 ---
-- [ ]  1. `Register` (Customer, Booking agent, Airline staff)
+- [x]  1. `Register` (Customer, Booking agent, Airline staff)
 - [x]  2. `Login` (Customer, Booking agent, Airline staff)
 - [x]  3. `Logout` (Customer, Booking agent, Airline staff)
 - [x]  4. `View my flights` (Customer, Booking agent, Airline staff)
