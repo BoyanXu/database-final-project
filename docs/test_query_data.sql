@@ -114,10 +114,20 @@ SELECT email, COUNT(ticket_id) as sale
   JOIN flight USING(airline_name, flight_num)
     WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
       AND airline_name='Jet Blue' GROUP BY email ORDER BY sale DESC
--- Response Format:
+-- Response Format: email, sale
 
+
+-- app.route("/staffHome/viewStaff/status")
+-- Query Format: range, airlineName
+-- Query Input : YEAR,  Jet Blue
 SELECT email, SUM(price) as commission
   FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
   JOIN flight USING(airline_name, flight_num)
     WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
       AND airline_name='Jet Blue' GROUP by email ORDER by commission DESC
+-- Response Format: email, commission
+
+-- Query Format: Status, flight_num
+-- Query Input: "In progress", 102
+-- app.route("/staffHome")
+UPDATE flight SET status='In-progress' where flight_num=102 and airline_name = 'Jet Blue'

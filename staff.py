@@ -28,10 +28,21 @@ def authorizeStaffSession():
         return False
 
 
-@app.route('/staffHome')
+@app.route('/staffHome', methods=["GET", "POST"])
 def staffHome():
     username = session['username']
     airlineName = getStaffAirline(username)
+
+    if request.method == "POST":
+        flight_num = request.form['flight_num']
+        status = request.form['status']
+        cursor = conn.cursor()
+        query = """UPDATE flight SET status=%s
+                    WHERE flight_num=%s AND airline_name = %s
+            """
+        cursor.execute(query, (status, flight_num, airlineName))
+        conn.commit()
+        cursor.close()
 
     cursor = conn.cursor()
     query = """SELECT * FROM flight
@@ -45,7 +56,16 @@ def staffHome():
     cursor.execute(query, (airlineName))
     data = cursor.fetchall()
     cursor.close()
-    return render_template("pages/staffHome.html", username=username, data=data)
+
+    form = ChangeFlightForm(request.form)
+    return render_template("pages/staffHome.html", username=username, data=data, form=form)
+
+# @app.route("/staffHome/changeFlight", methods=["GET"])
+# def staffChangeFlight():
+#     if not authorizeStaffSession():
+#         return redirect(url_for('index'))
+#     username = session["username"]
+#     form = ChangeFlightForm(username=username)
 
 @app.route("/staffHome/createFlight", methods=["GET"])
 def staffCreateFlight():

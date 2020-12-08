@@ -37,6 +37,21 @@
     </tr>
     {% endfor %}
   </table>
+</div>
+<div>
+  <form class="form" method="POST" action="/staffHome">
+  <h3 class="form-heading">
+    Change Flight Status
+  </h3>
+
+  {{ form.flight_num(class_ = 'form-control first-input', placeholder = form.flight_num.label.text, required = true, autofocus = true) }}
+  {{ form.status(class_ = 'form-control last-input', placeholder = form.status.label.text, required = true) }}
+
+  <input type="submit" value="Change Status" class="btn btn-primary btn-lg btn-block" >
+  </form>
+</div>
+<br/>
+<div>
   <p class="pull-none"><a href="{{ url_for('staffCreateFlight') }}">Create a Flight</a></p>
   <br/>
   <p class="pull-none"><a href="{{ url_for('staffCreateAirplane') }}">Create an Airplane</a></p>

@@ -100,6 +100,10 @@ class FlightSearchForm(Form):
     toAirport   = TextField("To Airport", validators=[DataRequired()])
     toDate      = DateField("To Date", validators=[DataRequired()])
 
+class ChangeFlightForm(Form):
+    flight_num = TextField("Flight Number", validators=[DataRequired()])
+    status     = SelectField('New Status', choices=[('Upcoming', 'Upcoming'), ('In-progress', 'In Progress'), ('Delayed', 'Delayed')], validators=[DataRequired()])
+
 class CreateFlightForm(Form):
     # airlineName  = TextField("Airline Name", validators=[DataRequired()])  <- use getAirlineName() instead of input it
     flightNumber = TextField("Flight Number", validators=[DataRequired()])
@@ -120,4 +124,4 @@ class CreateAirportForm(Form):
 
 class ViewStaffForm(Form):
     range    = SelectField('Time Range', choices=[('month', 'Past Month'), ('year', 'Past Year')], validators=[DataRequired()])
-    criteria = SelectField('Ranking Criteria', choices=[('sale', 'Ticket sales'), ('commission', 'Amount of commission')])
+    criteria = SelectField('Ranking Criteria', choices=[('sale', 'Ticket sales'), ('commission', 'Amount of commission')], validators=[DataRequired()])
