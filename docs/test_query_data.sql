@@ -131,3 +131,13 @@ SELECT email, SUM(price) as commission
 -- Query Input: "In progress", 102
 -- app.route("/staffHome")
 UPDATE flight SET status='In-progress' where flight_num=102 and airline_name = 'Jet Blue'
+
+
+-- app.route("/agentHome")
+-- Query Format: email
+-- Query Input : Booking@agent.com
+SELECT SUM(price) as commission
+  FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+  JOIN flight USING(airline_name, flight_num)
+    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
+      AND email='Booking@agent.com' GROUP by email

@@ -27,7 +27,7 @@
       </tr>
     </thead>
     <tbody>
-    {% for line in data %}
+    {% for line in flightData %}
     <tr scope="row">
       <td>{{line.ticket_id}}</td>
       <td>{{line.airline_name}}</td>
@@ -47,6 +47,7 @@
     {% endfor %}
   </table>
 
+  <h3>My commission in last month is: <strong>{{commission}}</strong></h3>
 </div>
 
 {% endblock %}
