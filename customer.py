@@ -3,6 +3,7 @@ import pymysql.cursors
 
 from appconf import app, conn
 from forms import *
+from charts import *
 
 from datetime import date, timedelta
 
@@ -30,6 +31,12 @@ def getSpending(username, fromDate=last6mons(), toDate=today()):
         return data['TotalSpending']
     except:
         return "Null"
+
+def getSpendingChart():
+    NewChart = MyBarGraph()
+    NewChart.data.label = "My Favourite Numbers"      # can change data after creation
+    ChartJSON = NewChart.get()
+    return ChartJSON
 
 
 @app.route("/customerHome", methods=["GET", "POST"])
@@ -64,11 +71,12 @@ def customerHome():
         fromDate = request.form['fromDate']
         toDate   = request.form['toDate']
         mySpending = getSpending(username, fromDate, toDate)
+        ChartJSON = getSpendingChart()
     else:
         mySpending = getSpending(username)
-
+        ChartJSON = getSpendingChart()
     form = TrackSpendingForm(request.form)
-    return render_template("pages/customerHome.html", username=username, posts=data, form=form, mySpending=mySpending)
+    return render_template("pages/customerHome.html", username=username, posts=data, form=form, mySpending=mySpending, chartJSON=ChartJSON)
 
 
 @app.route("/customerHome/purchase", methods=["GET"])

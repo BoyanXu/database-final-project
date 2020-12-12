@@ -1,0 +1,33 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Agent {{username}}'s Purchase Page</h1>
+</div>
+
+<form class="form" method="POST" action="/agentHome/purchase/status">
+  <h3 class="form-heading">
+    Purchase through Airline Name & Flight Number & Customer Email
+  </h3>
+
+  {{ form.airlineName(class_ = 'form-control first-input', placeholder = form.airlineName.label.text, required = true, autofocus = true) }}
+  {{ form.flightNumber(class_ = 'form-control last-input', placeholder = form.flightNumber.label.text, required = true) }}
+  {{ form.customerEmail(class_ = 'form-control first-input', placeholder = form.customerEmail.label.text, required = true, autofocus = true) }}
+
+  <input type="submit" value="Submit Order" class="btn btn-primary btn-lg btn-block" >
+
+  <p class="pull-left"><a href="{{ url_for('agentHome') }}">Go to homegape</a></p>
+  <p class="pull-right"><a href="{{ url_for('publicSearch') }}">Search for Flight</a></p>
+
+</form>
+
+{% if error %}
+    <p class="alert alert-danger" role="alert"><strong>Error:</strong> {{error}}</p>
+{% endif %}
+
+{% if myTicket %}
+  <p class="alert alert-success" role="alert"><strong>Success:</strong> Your ticket_id is: {{myTicket}}</p>
+{% endif %}
+
+{% endblock %}

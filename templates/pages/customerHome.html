@@ -34,6 +34,12 @@
 </div>
 
 <div>
+  <p class="pull-left"><a href="{{ url_for('customerSearch') }}">Search for Flight</a></p>
+  <p class="pull-right"><a href="{{ url_for('customerPurchase') }}">Buy a Ticket</a></p>
+</div>
+<br/>
+
+<div>
   <form class="form" method="POST" action="/customerHome">
   <h3 class="form-heading">
     My Spending is: <strong> {{mySpending}} </strong>
@@ -47,9 +53,12 @@
 </div>
 <br/>
 
-<div>
-  <p class="pull-left"><a href="{{ url_for('customerSearch') }}">Search for Flight</a></p>
-  <p class="pull-right"><a href="{{ url_for('customerPurchase') }}">Buy a Ticket</a></p>
-</div>
+<canvas id="myChart"></canvas>
+
+<script>
+    var data = {{ chartJSON | safe }}
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, data);
+</script>
 
 {% endblock %}

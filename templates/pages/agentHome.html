@@ -5,6 +5,7 @@
 <div class="page-header">
   <h1>Agent {{username}}'s Homepage</h1>
 </div>
+
 <div>
   <h3>My clients' Upcoming Flight(s)</h3>
   <table class="table">
@@ -49,5 +50,11 @@
 
   <h3>My commission in last month is: <strong>{{commission}}</strong></h3>
 </div>
+
+<div>
+  <p class="pull-left"><a href="{{ url_for('publicSearch') }}">Search for Flight</a></p>
+  <p class="pull-right"><a href="{{ url_for('agentPurchase') }}">Buy a Ticket</a></p>
+</div>
+<br/>
 
 {% endblock %}

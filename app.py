@@ -62,8 +62,7 @@ def publicSearchResult():
                     WHERE airport.airport_name=f.departure_airport
                     AND airport.airport_city = %s
                     AND airport.airport_name = %s
-                    AND %s BETWEEN DATE_SUB(f.departure_time, INTERVAL 2 DAY) AND DATE_ADD(f.departure_time, INTERVAL 2 DAY)
-                    AND %s BETWEEN DATE_SUB(f.arrival_time, INTERVAL 2 DAY) AND DATE_ADD(f.arrival_time, INTERVAL 2 DAY)
+                    AND f.departure_time BETWEEN DATE_SUB(%s, INTERVAL 2 DAY) AND DATE_ADD(%s, INTERVAL 2 DAY)
                     AND (f.airline_name, f.flight_num) in
                         (SELECT flight.airline_name, flight.flight_num FROM flight, airport
                             WHERE airport.airport_name=flight.arrival_airport

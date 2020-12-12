@@ -92,6 +92,11 @@ class PurchaseForm(Form):
     airlineName  = TextField("Airline Name", validators=[DataRequired()])
     flightNumber = TextField("Flight Number", validators=[DataRequired()])
 
+class AgentPurchaseForm(Form):
+    airlineName   = TextField("Airline Name", validators=[DataRequired()])
+    flightNumber  = TextField("Flight Number", validators=[DataRequired()])
+    customerEmail = TextField('Customer Email', validators=[DataRequired()])
+
 class FlightSearchForm(Form):
     fromCity    = TextField("From City", validators=[DataRequired()])
     fromAirport = TextField("From Airport", validators=[DataRequired()])
