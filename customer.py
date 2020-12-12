@@ -3,7 +3,6 @@ import pymysql.cursors
 
 from appconf import app, conn
 from forms import *
-from charts import *
 
 from datetime import date, timedelta
 
