@@ -163,13 +163,14 @@ SELECT airport_city, COUNT(ticket_id) as count FROM airport, ticket JOIN flight 
       GROUP BY purchases.customer_email
 
   -- Spending Details
-  SELECT flight.price, YEAR(purchases.purchase_date), MONTH(purchases.purchase_date)
+SELECT SUM(flight.price) as spend, YEAR(purchases.purchase_date) as year, MONTH(purchases.purchase_date) as month
     FROM purchases, ticket, flight
       WHERE purchases.customer_email = 'one@nyu.edu'
       AND purchases.ticket_id = ticket.ticket_id
       AND ticket.airline_name = flight.airline_name
       AND ticket.flight_num = flight.flight_num
       AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+    GROUP BY year, month
     ORDER BY purchases.purchase_date
 
 -- Agent
@@ -187,3 +188,15 @@ SELECT airport_city, COUNT(ticket_id) as count FROM airport, ticket JOIN flight 
       WHERE booking_agent.email = 'Booking@agent.com'
       AND purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
       GROUP by customer_email ORDER by commission DESC LIMIT 5
+
+
+-- Staff Report
+SELECT * FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+      WHERE  airline_name = 'Jet Blue'
+
+  SELECT customer_email, COUNT(ticket_id) FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+        WHERE  airline_name = 'Jet Blue' GROUP BY customer_email
+
+  SELECT price, purchase_date
+  FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+    WHERE  airline_name = 'Jet Blue'

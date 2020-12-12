@@ -23,6 +23,17 @@ def getTopDestinations(airline):
     cursor.execute(query, (airline))
     data = cursor.fetchall()
     cursor.close()
+    return data # Purchase dates
+
+def getReport(airline):
+    cursor = conn.cursor()
+    query = """SELECT purchase_date
+                FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+                    WHERE  airline_name = %s
+            """
+    cursor.execute(query, (airline))
+    data = cursor.fetchall()
+    cursor.close()
     return data
 
 def authorizeStaffSession():
@@ -183,7 +194,7 @@ def staffViewAgent():
     if not authorizeStaffSession():
         return redirect(url_for('index'))
     username = session["username"]
-    form     = ViewStaffForm(request.form)
+    form     = ViewAgentForm(request.form)
     return render_template("pages/staffViewAgent.html", username=username, form=form)
 
 @app.route("/staffHome/viewAgent/status", methods=["GET", "POST"])
@@ -229,5 +240,5 @@ def staffViewAgentStatus():
     data = cursor.fetchall()
     cursor.close()
 
-    form = ViewStaffForm(request.form)
+    form = ViewAgentForm(request.form)
     return render_template("pages/staffViewAgent.html", username=username, form=form, criteria=criteria, data=data)

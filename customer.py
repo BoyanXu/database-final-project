@@ -11,7 +11,7 @@ def today():
     return date.today().isoformat()
 
 def last6mons():
-    return (date.today() - timedelta(days=30)).isoformat()
+    return (date.today() - timedelta(days=180)).isoformat()
 
 def getSpending(username, fromDate=last6mons(), toDate=today()):
     cursor = conn.cursor()
@@ -32,11 +32,33 @@ def getSpending(username, fromDate=last6mons(), toDate=today()):
     except:
         return "Null"
 
-def getSpendingChart():
-    NewChart = MyBarGraph()
-    NewChart.data.label = "My Favourite Numbers"      # can change data after creation
-    ChartJSON = NewChart.get()
-    return ChartJSON
+
+def getSpendingDistr(username):
+    fromDate=last6mons()
+    toDate=today()
+    cursor = conn.cursor()
+    query = """SELECT SUM(flight.price) as spend, YEAR(purchases.purchase_date) as year, MONTH(purchases.purchase_date) as month
+                    FROM purchases, ticket, flight
+                    WHERE purchases.customer_email = %s
+                        AND purchases.ticket_id = ticket.ticket_id
+                        AND ticket.airline_name = flight.airline_name
+                        AND ticket.flight_num = flight.flight_num
+                        AND purchases.purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+                    GROUP BY year, month
+                    ORDER BY purchases.purchase_date"""
+    cursor.execute(query, (username, fromDate, toDate))
+    data = cursor.fetchall()
+    cursor.close()
+
+    labels = []
+    dataset = []
+
+    for line in data:
+        label = str(line['year']) + '-'  + str(line['month'])
+        data  = int(line['spend'])
+        labels.append(label)
+        dataset.append(data)
+    return labels, dataset
 
 
 @app.route("/customerHome", methods=["GET", "POST"])
@@ -71,12 +93,13 @@ def customerHome():
         fromDate = request.form['fromDate']
         toDate   = request.form['toDate']
         mySpending = getSpending(username, fromDate, toDate)
-        ChartJSON = getSpendingChart()
     else:
         mySpending = getSpending(username)
-        ChartJSON = getSpendingChart()
+
+    labels, dataset = getSpendingDistr(username)
+
     form = TrackSpendingForm(request.form)
-    return render_template("pages/customerHome.html", username=username, posts=data, form=form, mySpending=mySpending, chartJSON=ChartJSON)
+    return render_template("pages/customerHome.html", username=username, posts=data, form=form, mySpending=mySpending, labels=labels, dataset=dataset)
 
 
 @app.route("/customerHome/purchase", methods=["GET"])
