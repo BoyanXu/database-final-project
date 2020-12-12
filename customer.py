@@ -4,7 +4,35 @@ import pymysql.cursors
 from appconf import app, conn
 from forms import *
 
-@app.route("/customerHome", methods=["GET"])
+from datetime import date, timedelta
+
+def today():
+    return date.today().isoformat()
+
+def last6mons():
+    return (date.today() - timedelta(days=30)).isoformat()
+
+def getSpending(username, fromDate=last6mons(), toDate=today()):
+    cursor = conn.cursor()
+    # default track last 6 month
+    query = """SELECT SUM(flight.price) as TotalSpending
+                FROM purchases, ticket, flight
+                    WHERE purchases.customer_email = %s
+                    AND purchases.ticket_id = ticket.ticket_id
+                    AND ticket.airline_name = flight.airline_name
+                    AND ticket.flight_num = flight.flight_num
+                    AND purchases.purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+                    GROUP BY purchases.customer_email"""
+    cursor.execute(query, (username, fromDate, toDate))
+    data = cursor.fetchone()
+    cursor.close()
+    try:
+        return data['TotalSpending']
+    except:
+        return "Null"
+
+
+@app.route("/customerHome", methods=["GET", "POST"])
 def customerHome():
     username = session["username"]
 
@@ -31,7 +59,16 @@ def customerHome():
     cursor.execute(query, (username))
     data = cursor.fetchall()
     cursor.close()
-    return render_template("pages/customerHome.html", username=username, posts=data)
+
+    if request.method == "POST":
+        fromDate = request.form['fromDate']
+        toDate   = request.form['toDate']
+        mySpending = getSpending(username, fromDate, toDate)
+    else:
+        mySpending = getSpending(username)
+
+    form = TrackSpendingForm(request.form)
+    return render_template("pages/customerHome.html", username=username, posts=data, form=form, mySpending=mySpending)
 
 
 @app.route("/customerHome/purchase", methods=["GET"])
@@ -109,8 +146,7 @@ def customerSearchHandler():
                     WHERE airport.airport_name=f.departure_airport
                     AND airport.airport_city = %s
                     AND airport.airport_name = %s
-                    AND %s BETWEEN DATE_SUB(f.departure_time, INTERVAL 2 DAY) AND DATE_ADD(f.departure_time, INTERVAL 2 DAY)
-                    AND %s BETWEEN DATE_SUB(f.arrival_time, INTERVAL 2 DAY) AND DATE_ADD(f.arrival_time, INTERVAL 2 DAY)
+                    AND f.departure_time BETWEEN DATE_SUB(%s, INTERVAL 2 DAY) AND DATE_ADD(%s, INTERVAL 2 DAY)
                     AND (f.airline_name, f.flight_num) in
                         (SELECT flight.airline_name, flight.flight_num FROM flight, airport
                             WHERE airport.airport_name=flight.arrival_airport

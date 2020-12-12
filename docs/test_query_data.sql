@@ -35,8 +35,7 @@ SELECT distinct f.airline_name,
             WHERE airport.airport_name=f.departure_airport
             AND airport.airport_city = 'San Francisco'
             AND airport.airport_name = 'SFO'
-            AND '2020-12-20' BETWEEN DATE_SUB(f.departure_time, INTERVAL 2 DAY) AND DATE_ADD(f.departure_time, INTERVAL 2 DAY)
-            AND '2020-12-21' BETWEEN DATE_SUB(f.arrival_time, INTERVAL 2 DAY) AND DATE_ADD(f.arrival_time, INTERVAL 2 DAY)
+            AND f.departure_time BETWEEN DATE_SUB('2019-12-20', INTERVAL 2 DAY) AND DATE_ADD('2020-12-21', INTERVAL 2 DAY)
             AND (f.airline_name, f.flight_num) in
                 (SELECT flight.airline_name, flight.flight_num FROM flight, airport
                     WHERE airport.airport_name=flight.arrival_airport
@@ -142,6 +141,7 @@ SELECT SUM(price) as commission
     WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
       AND email='Booking@agent.com' GROUP by email
 
+
 -- app.route("/staffHome")
 -- Query Format: airline_name
 -- Query Input : Jet Blue
@@ -150,3 +150,24 @@ SELECT airport_city, COUNT(ticket_id) as count FROM airport, ticket JOIN flight 
     AND airline_name='Jet Blue' GROUP by airport_city ORDER by count DESC
 -- Response Format: airport_name, count
 
+
+-- Customer
+  -- Track My spending
+  SELECT SUM(flight.price) as TotalSpending
+    FROM purchases, ticket, flight
+      WHERE purchases.customer_email = 'one@nyu.edu'
+      AND purchases.ticket_id = ticket.ticket_id
+      AND ticket.airline_name = flight.airline_name
+      AND ticket.flight_num = flight.flight_num
+      AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+      GROUP BY purchases.customer_email
+
+  -- Spending Details
+  SELECT flight.price, YEAR(purchases.purchase_date), MONTH(purchases.purchase_date)
+    FROM purchases, ticket, flight
+      WHERE purchases.customer_email = 'one@nyu.edu'
+      AND purchases.ticket_id = ticket.ticket_id
+      AND ticket.airline_name = flight.airline_name
+      AND ticket.flight_num = flight.flight_num
+      AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+    ORDER BY purchases.purchase_date

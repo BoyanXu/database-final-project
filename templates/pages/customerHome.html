@@ -31,9 +31,25 @@
     </tbody>
     {% endfor %}
   </table>
+</div>
+
+<div>
+  <form class="form" method="POST" action="/customerHome">
+  <h3 class="form-heading">
+    My Spending is: <strong> {{mySpending}} </strong>
+  </h3>
+  <h4>(Default Range is last 6 month, or choose range between: )</h4>
+  {{ form.fromDate(class_ = 'form-control first-input', placeholder = form.fromDate.label.text, required = true, autofocus = true) }}
+  {{ form.toDate(class_ = 'form-control last-input', placeholder = form.toDate.label.text, required = true) }}
+
+  <input type="submit" value="Select Range" class="btn btn-primary btn-lg btn-block" >
+  </form>
+</div>
+<br/>
+
+<div>
   <p class="pull-left"><a href="{{ url_for('customerSearch') }}">Search for Flight</a></p>
   <p class="pull-right"><a href="{{ url_for('customerPurchase') }}">Buy a Ticket</a></p>
-
 </div>
 
 {% endblock %}

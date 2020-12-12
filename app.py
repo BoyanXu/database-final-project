@@ -24,19 +24,6 @@ from logging import Formatter, FileHandler
 from forms import *
 import os
 
-# Login required decorator.
-
-# def login_required(test):
-#     @wraps(test)
-#     def wrap(*args, **kwargs):
-#         if 'logged_in' in session:
-#             return test(*args, **kwargs)
-#         else:
-#             flash('You need to login first.')
-#             return redirect(url_for('login'))
-#     return wrap
-
-
 conn = pymysql.connect(host='127.0.0.1',
                        user='root',
                        password='', # password for XMAPP
@@ -45,11 +32,6 @@ conn = pymysql.connect(host='127.0.0.1',
                        unix_socket='/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
-
-#----------------------------------------------------------------------------#
-# Controllers.
-#----------------------------------------------------------------------------#
-
 
 @app.route('/')
 def home():
@@ -158,5 +140,4 @@ if not app.debug:
 # Default port:
 if __name__ == '__main__':
     app.run()
-    app.run(host='127.0.0.1', port=5000, debug = True
-)
+    app.run(host='127.0.0.1', port=5000, debug = True)

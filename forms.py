@@ -100,6 +100,10 @@ class FlightSearchForm(Form):
     toAirport   = TextField("To Airport", validators=[DataRequired()])
     toDate      = DateField("To Date", validators=[DataRequired()])
 
+class TrackSpendingForm(Form):
+    fromDate    = DateField("From Date", validators=[DataRequired()])
+    toDate      = DateField("To Date", validators=[DataRequired()])
+
 class ChangeFlightForm(Form):
     flight_num = TextField("Flight Number", validators=[DataRequired()])
     status     = SelectField('New Status', choices=[('Upcoming', 'Upcoming'), ('In-progress', 'In Progress'), ('Delayed', 'Delayed')], validators=[DataRequired()])
