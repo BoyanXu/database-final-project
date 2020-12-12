@@ -1,7 +1,7 @@
 # Database Final Project
 This is the repo holds source code for the final project of Databases CSCI-SHU 213 2020 Fall
 ## Roadmap
----
+
 - [x]  1. `Register` (Customer, Booking agent, Airline staff)
 - [x]  2. `Login` (Customer, Booking agent, Airline staff)
 - [x]  3. `Logout` (Customer, Booking agent, Airline staff)
@@ -23,7 +23,7 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 - [x]  19. `View Top destinations` (Airline staff)
 
 ## Accuse for Flight_Search demo failure
----
+
 
 Unnecessary filter condition for arrival time.
 ```sql
@@ -32,7 +32,7 @@ AND '2020-12-21' BETWEEN DATE_SUB(f.arrival_time, INTERVAL 2 DAY) AND DATE_ADD(f
 ```
 
 ## Project Structure
----
+
 
 ```sh
 ├── README.md
