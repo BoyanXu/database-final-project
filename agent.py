@@ -100,3 +100,56 @@ def agentPurchaseStatus():
         return render_template('pages/agentPurchase.html', username=username, form=form, results=data, myTicket=nxt_ticket_id)
 
 
+@app.route("/agentHome/viewCustomer", methods=["GET"])
+def agentViewCustomer():
+    username = session["username"]
+    form     = ViewCustomerForm(request.form)
+    return render_template("pages/agentViewCustomer.html", username=username, form=form)
+
+
+@app.route("/agentHome/viewCustomer/status", methods=["GET", "POST"])
+def agentViewCustomerStatus():
+    username = session["username"]
+    range    = request.form['range']
+    criteria = request.form['criteria']
+    cursor = conn.cursor()
+
+    query = ""
+    if criteria == "sale" and range == "year":
+        query ="""  SELECT customer_email, COUNT(ticket_id) as sale
+                        FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                        JOIN flight USING(airline_name, flight_num)
+                        WHERE booking_agent.email = %s
+                        AND purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+                        GROUP BY customer_email ORDER BY sale DESC LIMIT 5
+                """
+    elif criteria == "sale" and range == "month":
+        query ="""SELECT customer_email, COUNT(ticket_id) as sale
+                        FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                        JOIN flight USING(airline_name, flight_num)
+                        WHERE booking_agent.email = %s
+                        AND purchase_date >= date_sub(curdate(), INTERVAL 6 MONTH)
+                            GROUP BY customer_email ORDER BY sale DESC LIMIT 5
+                """
+    elif criteria == "commission" and range == "year":
+        query = """  SELECT customer_email, SUM(price) as commission
+                        FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                        JOIN flight USING(airline_name, flight_num)
+                        WHERE booking_agent.email = %s
+                        AND purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+                            GROUP by customer_email ORDER by commission DESC LIMIT 5
+                """
+    elif criteria == "commission" and range == "month":
+        query =""" SELECT customer_email, SUM(price) as commission
+                        FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                        JOIN flight USING(airline_name, flight_num)
+                        WHERE booking_agent.email = %s
+                        AND purchase_date >= date_sub(curdate(), INTERVAL 6 MONTH)
+                            GROUP by customer_email ORDER by commission DESC LIMIT 5
+                """
+    cursor.execute(query, (username))
+    data = cursor.fetchall()
+    cursor.close()
+
+    form = ViewCustomerForm(request.form)
+    return render_template("pages/agentViewCustomer.html", username=username, form=form, criteria=criteria, data=data)

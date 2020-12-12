@@ -134,3 +134,8 @@ class CreateAirportForm(Form):
 class ViewStaffForm(Form):
     range    = SelectField('Time Range', choices=[('month', 'Past Month'), ('year', 'Past Year')], validators=[DataRequired()])
     criteria = SelectField('Ranking Criteria', choices=[('sale', 'Ticket sales'), ('commission', 'Amount of commission')], validators=[DataRequired()])
+
+class ViewCustomerForm(Form):
+    range    = SelectField('Time Range', choices=[('month', 'Past 6 Months'), ('year', 'Past Year')], validators=[DataRequired()])
+    criteria = SelectField('Ranking Criteria', choices=[('sale', 'Ticket sales'), ('commission', 'Amount of commission')], validators=[DataRequired()])
+

@@ -171,3 +171,19 @@ SELECT airport_city, COUNT(ticket_id) as count FROM airport, ticket JOIN flight 
       AND ticket.flight_num = flight.flight_num
       AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
     ORDER BY purchases.purchase_date
+
+-- Agent
+  -- Rank Customer
+  SELECT customer_email, COUNT(ticket_id) as sale
+    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+    JOIN flight USING(airline_name, flight_num)
+      WHERE booking_agent.email = 'Booking@agent.com'
+      AND purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+      GROUP BY customer_email ORDER BY sale DESC LIMIT 5
+
+  SELECT customer_email, SUM(price) as commission
+    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+    JOIN flight USING(airline_name, flight_num)
+      WHERE booking_agent.email = 'Booking@agent.com'
+      AND purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+      GROUP by customer_email ORDER by commission DESC LIMIT 5
