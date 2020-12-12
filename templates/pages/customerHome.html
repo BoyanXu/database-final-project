@@ -54,7 +54,7 @@
 <br/>
 
 <div>
-  <h3> Spending in last 6 months</h3>
+  <h3> Sales Chart:</h3>
   <canvas id="myChart"></canvas>
 </div>
 
@@ -66,7 +66,7 @@
       data: {
         labels: {{labels|safe}},
         datasets: [{
-          label: 'Speending',
+          label: 'Sales',
           backgroundColor: 'rgb(255, 99, 132)',
           borderColor: 'rgb(255, 99, 132)',
           data: {{dataset}}

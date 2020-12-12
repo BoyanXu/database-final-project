@@ -1,0 +1,58 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Staff {{username}}'s Report Page</h1>
+</div>
+
+<div>
+  <form class="form" method="POST" action="/staffHome/viewReport">
+  <h3 class="form-heading">
+    Select the Range to Report
+  </h3>
+
+  {{ form.fromDate(class_ = 'form-control first-input', placeholder = form.fromDate.label.text, required = true, autofocus = true) }}
+  {{ form.toDate(class_ = 'form-control last-input', placeholder = form.toDate.label.text, required = true) }}
+
+  <input type="submit" value="Select Range" class="btn btn-primary btn-lg btn-block" >
+  </form>
+</div>
+<br/>
+
+<div>
+  <p class="pull-left"><a href="{{ url_for('staffHome') }}">Go back to Homepage</a></p>
+  <br/>
+</div>
+<br/>
+
+<div>
+  <h3> Sales Report</h3>
+  <canvas id="myChart"></canvas>
+</div>
+
+<br/>
+
+<script>
+    var data = {
+      // The type of chart we want to create
+      type: 'bar',
+      // The data for our dataset
+      data: {
+        labels: {{labels|safe}},
+        datasets: [{
+          label: 'Sales',
+          backgroundColor: 'rgb(255, 99, 132)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: {{dataset}}
+        }]
+      },
+
+      // Configuration options go here
+      options: {}
+    }
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, data);
+</script>
+
+{% endblock %}

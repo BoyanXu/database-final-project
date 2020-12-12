@@ -139,3 +139,6 @@ class ViewCustomerForm(Form):
     range    = SelectField('Time Range', choices=[('month', 'Past 6 Months'), ('year', 'Past Year')], validators=[DataRequired()])
     criteria = SelectField('Ranking Criteria', choices=[('sale', 'Ticket sales'), ('commission', 'Amount of commission')], validators=[DataRequired()])
 
+class StaffReportForm(Form):
+    fromDate    = DateField("From Date", validators=[DataRequired()])
+    toDate      = DateField("To Date", validators=[DataRequired()])

@@ -52,6 +52,33 @@
     </tr>
     {% endfor %}
   </table>
+  <br/>
+
+  <div>
+    <h3> Top Customers</h3>
+    <canvas id="myChart"></canvas>
+  </div>
+
+  <script>
+      var data = {
+        // The type of chart we want to create
+        type: 'bar',
+        // The data for our dataset
+        data: {
+          labels: {{labels|safe}},
+          datasets: [{
+            label: 'Speending',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: {{dataset}}
+          }]
+        },
+        // Configuration options go here
+        options: {}
+      }
+      var ctx = document.getElementById("myChart").getContext('2d');
+      var myChart = new Chart(ctx, data);
+  </script>
 {% endif %}
 
 {% endblock %}

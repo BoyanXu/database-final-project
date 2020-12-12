@@ -151,5 +151,14 @@ def agentViewCustomerStatus():
     data = cursor.fetchall()
     cursor.close()
 
+    labels = []
+    dataset = []
+
+    for line in data:
+        label = line['customer_email']
+        sales  = line[criteria]
+        labels.append(label)
+        dataset.append(int(sales))
+
     form = ViewCustomerForm(request.form)
-    return render_template("pages/agentViewCustomer.html", username=username, form=form, criteria=criteria, data=data)
+    return render_template("pages/agentViewCustomer.html", username=username, form=form, criteria=criteria, data=data, labels=labels, dataset=dataset)

@@ -191,12 +191,8 @@ SELECT SUM(flight.price) as spend, YEAR(purchases.purchase_date) as year, MONTH(
 
 
 -- Staff Report
-SELECT * FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
-      WHERE  airline_name = 'Jet Blue'
-
-  SELECT customer_email, COUNT(ticket_id) FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
-        WHERE  airline_name = 'Jet Blue' GROUP BY customer_email
-
-  SELECT price, purchase_date
+SELECT YEAR(purchase_date) as year, MONTH(purchase_date) as month, COUNT(ticket_id) as sales
   FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
     WHERE  airline_name = 'Jet Blue'
+    AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+  GROUP BY year, month

@@ -5,6 +5,36 @@ import datetime
 from appconf import app, conn, validateDates
 from forms import *
 
+from datetime import date, timedelta
+
+def today():
+    return date.today().isoformat()
+
+def last6mons():
+    return (date.today() - timedelta(days=180)).isoformat()
+
+def getReport(username, fromDate=last6mons(), toDate=today()):
+    fromDate=last6mons()
+    toDate=today()
+    cursor = conn.cursor()
+    query = """SELECT YEAR(purchase_date) as year, MONTH(purchase_date) as month, COUNT(ticket_id) as sales
+                FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+                    WHERE  airline_name = %s
+                    AND purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+                GROUP BY year, month"""
+    cursor.execute(query, (username, fromDate, toDate))
+    data = cursor.fetchall()
+    cursor.close()
+
+    labels = []
+    dataset = []
+
+    for line in data:
+        label = str(line['year']) + '-'  + str(line['month'])
+        data  = int(line['sales'])
+        labels.append(label)
+        dataset.append(data)
+    return labels, dataset
 
 def getStaffAirline(username):
     cursor = conn.cursor()
@@ -25,13 +55,15 @@ def getTopDestinations(airline):
     cursor.close()
     return data # Purchase dates
 
-def getReport(airline):
+def getReport(airline, fromDate=last6mons(), toDate=today()):
     cursor = conn.cursor()
-    query = """SELECT purchase_date
+    query = """SELECT YEAR(purchase_date) as year, MONTH(purchase_date) as month, COUNT(ticket_id) as sales
                 FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
                     WHERE  airline_name = %s
+                    AND purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+                GROUP BY year, month
             """
-    cursor.execute(query, (airline))
+    cursor.execute(query, (airline, fromDate, toDate))
     data = cursor.fetchall()
     cursor.close()
     return data
@@ -242,3 +274,27 @@ def staffViewAgentStatus():
 
     form = ViewAgentForm(request.form)
     return render_template("pages/staffViewAgent.html", username=username, form=form, criteria=criteria, data=data)
+
+
+@app.route("/staffHome/viewReport", methods=["GET", "POST"])
+def staffViewReport():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+    airline  = getStaffAirline(username)
+
+    if request.method == "POST":
+        data = getReport(airline, request.form['fromDate'], request.form['toDate'])
+    else:
+        data = getReport(airline)
+
+    labels = []
+    dataset = []
+    for line in data:
+        label = str(line['year']) + '-'  + str(line['month'])
+        data  = int(line['sales'])
+        labels.append(label)
+        dataset.append(data)
+
+    form = StaffReportForm(request.form)
+    return render_template("pages/staffViewReport.html", username=username, form=form, labels=labels, dataset=dataset)
