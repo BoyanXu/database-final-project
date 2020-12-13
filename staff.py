@@ -10,8 +10,14 @@ from datetime import date, timedelta
 def today():
     return date.today().isoformat()
 
+def last1mon():
+    return (date.today() - timedelta(days=30)).isoformat()
+
 def last6mons():
     return (date.today() - timedelta(days=180)).isoformat()
+
+def last1year():
+    return (date.today() - timedelta(days=365)).isoformat()
 
 def getReport(username, fromDate=last6mons(), toDate=today()):
     fromDate=last6mons()
@@ -68,6 +74,26 @@ def getReport(airline, fromDate=last6mons(), toDate=today()):
     cursor.close()
     return data
 
+def getRevenue(airline):
+    query = """SELECT *  FROM
+                (SELECT SUM(price) as unagented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+                    WHERE  airline_name = %s
+                    AND purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+                    AND booking_agent_id IS NULL) as a,
+                (SELECT SUM(price) as agented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+                    WHERE  airline_name = %s
+                    AND purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+                    AND booking_agent_id IS NOT NULL) as b
+    """
+    cursor = conn.cursor()
+    cursor.execute(query, (airline, last1mon(), today(), airline, last1mon(), today()))
+    last1MonData = cursor.fetchone()
+    cursor.execute(query, (airline, last1year(), today(), airline, last1year(), today()))
+    last1YearData = cursor.fetchone()
+    cursor.close()
+    return last1MonData, last1YearData
+
+
 def authorizeStaffSession():
     username = session['username']
     query = 'SELECT * from airline_staff WHERE username=%s'
@@ -113,16 +139,23 @@ def staffHome():
 
     topDestinations = getTopDestinations(airlineName)
 
+    last1MonData, last1YearData = getRevenue(airlineName)
+
+    last1Monlabels = ['agented', 'unagented']
+    last1Mondataset = [int(last1MonData['agented']), int(last1MonData['unagented'])]
+
+    last1Yearlabels = ['agented', 'unagented']
+    last1Yeardataset = [int(last1YearData['agented']), int(last1YearData['unagented'])]
+
     form = ChangeFlightForm(request.form)
     return render_template("pages/staffHome.html", username=username, data=data,
-                           form=form, topDestinations=topDestinations)
+                           last1Monlabels   = last1Monlabels,
+                           last1Mondataset  = last1Mondataset,
+                           last1Yearlabels  = last1Yearlabels,
+                           last1Yeardataset = last1Yeardataset,
+                           form             = form,
+                           topDestinations  = topDestinations)
 
-# @app.route("/staffHome/changeFlight", methods=["GET"])
-# def staffChangeFlight():
-#     if not authorizeStaffSession():
-#         return redirect(url_for('index'))
-#     username = session["username"]
-#     form = ChangeFlightForm(username=username)
 
 @app.route("/staffHome/createFlight", methods=["GET"])
 def staffCreateFlight():

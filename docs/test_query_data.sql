@@ -196,3 +196,18 @@ SELECT YEAR(purchase_date) as year, MONTH(purchase_date) as month, COUNT(ticket_
     WHERE  airline_name = 'Jet Blue'
     AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
   GROUP BY year, month
+
+
+--
+
+SELECT *  FROM
+
+(SELECT SUM(price) as unagented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+    WHERE  airline_name = 'Jet Blue'
+    AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+    AND booking_agent_id IS NULL) as a,
+
+(SELECT SUM(price) as agented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+    WHERE  airline_name = 'Jet Blue'
+    AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+    AND booking_agent_id IS NOT NULL) as b

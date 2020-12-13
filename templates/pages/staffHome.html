@@ -74,6 +74,19 @@
 </div>
 
 <br/>
+
+<div>
+  <h3> Last Month Revenue Report</h3>
+  <canvas id="lastMonChart"></canvas>
+</div>
+<br/>
+
+<div>
+  <h3> Last Year Revenue Report</h3>
+  <canvas id="lastYearChart"></canvas>
+</div>
+
+<br/>
 <div>
   <p class="pull-none"><a href="{{ url_for('staffCreateFlight') }}">Create a Flight</a></p>
   <br/>
@@ -87,5 +100,42 @@
   <br/>
 
 </div>
+
+<script>
+    var lastMondata = {
+      // The type of chart we want to create
+      type: 'pie',
+      // The data for our dataset
+      data: {
+        labels: {{last1Monlabels|safe}},
+        datasets: [{
+          borderColor: 'rgb(255, 99, 132)',
+          data: {{last1Mondataset}}
+        }]
+      },
+      // Configuration options go here
+      options: {}
+    }
+    var ctx = document.getElementById("lastMonChart").getContext('2d');
+    var lastMonChart = new Chart(ctx, lastMondata);
+
+    var lastYeardata = {
+      // The type of chart we want to create
+      type: 'pie',
+      // The data for our dataset
+      data: {
+        labels: {{last1Yearlabels|safe}},
+        datasets: [{
+          borderColor: 'rgb(255, 99, 132)',
+          data: {{last1Yeardataset}}
+        }]
+      },
+      // Configuration options go here
+      options: {}
+    }
+    var ctx2 = document.getElementById("lastYearChart").getContext('2d');
+    var lastYearChart = new Chart(ctx2, lastYeardata);
+</script>
+
 
 {% endblock %}
