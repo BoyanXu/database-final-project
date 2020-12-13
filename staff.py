@@ -42,6 +42,36 @@ def getReport(username, fromDate=last6mons(), toDate=today()):
         dataset.append(data)
     return labels, dataset
 
+def getTopCustomer(airline_name):
+    cursor = conn.cursor()
+    query = """SELECT customer_email, COUNT(ticket_id) as sale
+                FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                JOIN flight USING(airline_name, flight_num)
+                    WHERE flight.airline_name = %s
+                    AND purchases.purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+                    GROUP BY customer_email ORDER BY sale DESC LIMIT 1
+            """
+    cursor.execute(query, (airline_name, last1year(), today()))
+    data = cursor.fetchone()
+    cursor.close()
+    return data['customer_email']
+
+def getCustomerFlights(customer_email, airline_name):
+    cursor = conn.cursor()
+    query = """SELECT ticket.flight_num FROM purchases, ticket, flight
+                WHERE purchases.customer_email = %s
+                    AND purchases.ticket_id = ticket.ticket_id
+                    AND ticket.airline_name = flight.airline_name
+                    AND flight.airline_name = %s
+                    AND ticket.flight_num = flight.flight_num
+                    AND departure_time < curdate()
+                    AND purchases.purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+            """
+    cursor.execute(query, (customer_email, airline_name, last1year(), today()))
+    data = cursor.fetchall()
+    cursor.close()
+    return data
+
 def getStaffAirline(username):
     cursor = conn.cursor()
     query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
@@ -137,6 +167,7 @@ def staffHome():
     data = cursor.fetchall()
     cursor.close()
 
+    topCustomer = getTopCustomer(airlineName)
     topDestinations = getTopDestinations(airlineName)
 
     last1MonData, last1YearData = getRevenue(airlineName)
@@ -154,6 +185,7 @@ def staffHome():
                            last1Yearlabels  = last1Yearlabels,
                            last1Yeardataset = last1Yeardataset,
                            form             = form,
+                           topCustomer      = topCustomer,
                            topDestinations  = topDestinations)
 
 
@@ -331,3 +363,19 @@ def staffViewReport():
 
     form = StaffReportForm(request.form)
     return render_template("pages/staffViewReport.html", username=username, form=form, labels=labels, dataset=dataset)
+
+
+@app.route("/staffHome/checkCustomer", methods=["GET", "POST"])
+def staffCheckCustomer():
+    if not authorizeStaffSession():
+        return redirect(url_for('index'))
+    username = session["username"]
+    airline  = getStaffAirline(username)
+
+    if request.method == "POST":
+        data = getCustomerFlights(request.form['customer_email'], airline)
+        form = StaffCheckCustomer(request.form)
+        return render_template("pages/staffCheckCustomer.html", username=username, form=form, data=data)
+    else:
+        form = StaffCheckCustomer(request.form)
+        return render_template("pages/staffCheckCustomer.html", username=username, form=form)

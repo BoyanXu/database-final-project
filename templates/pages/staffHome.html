@@ -76,6 +76,14 @@
 <br/>
 
 <div>
+  <h3>
+    My most frequent customer is: {{topCustomer}}
+  </h3>
+</div>
+
+<br/>
+
+<div>
   <h3> Last Month Revenue Report</h3>
   <canvas id="lastMonChart"></canvas>
 </div>
@@ -98,7 +106,8 @@
   <br />
   <p class="pull-none"><a href="{{ url_for('staffViewAgent') }}">View Agents</a></p>
   <br/>
-
+  <p class="pull-none"><a href="{{ url_for('staffCheckCustomer') }}">Check Customer</a></p>
+  <br/>
 </div>
 
 <script>

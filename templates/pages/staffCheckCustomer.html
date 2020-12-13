@@ -1,0 +1,47 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Staff {{username}}'s Check Customer Page</h1>
+</div>
+
+<div>
+  <form class="form" method="POST" action="/staffHome/checkCustomer">
+  <h3 class="form-heading">
+    Check the following Customer's flight taken in last year
+  </h3>
+
+  {{ form.customer_email(class_ = 'form-control first-input', placeholder = form.customer_email.label.text, required = true, autofocus = true) }}
+
+  <input type="submit" value="Check Flights" class="btn btn-primary btn-lg btn-block" >
+  </form>
+</div>
+<br/>
+
+<h3> Flights taken last year will show below: </h3>
+{% if data %}
+    <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Flight Number</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for line in data %}
+    <tr>
+      <td>{{line.flight_num}}</td>
+      <td>{{line.count}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+
+<div>
+  <p class="pull-left"><a href="{{ url_for('staffHome') }}">Go back to Homepage</a></p>
+  <br/>
+</div>
+<br/>
+
+
+{% endblock %}

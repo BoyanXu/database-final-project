@@ -142,3 +142,6 @@ class ViewCustomerForm(Form):
 class StaffReportForm(Form):
     fromDate    = DateField("From Date", validators=[DataRequired()])
     toDate      = DateField("To Date", validators=[DataRequired()])
+
+class StaffCheckCustomer(Form):
+    customer_email = TextField("Customer Email", validators=[DataRequired()])

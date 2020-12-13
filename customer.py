@@ -53,7 +53,7 @@ def getSpendingDistr(username):
     dataset = []
 
     for line in data:
-        label = str(line['year']) + '-'  + str(line['month'])
+        label = str(line['year']) + '-' + str(line['month'])
         data  = int(line['spend'])
         labels.append(label)
         dataset.append(data)

@@ -207,7 +207,25 @@ SELECT *  FROM
     AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
     AND booking_agent_id IS NULL) as a,
 
-(SELECT SUM(price) as agented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
-    WHERE  airline_name = 'Jet Blue'
-    AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
-    AND booking_agent_id IS NOT NULL) as b
+  (SELECT SUM(price) as agented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+      WHERE  airline_name = 'Jet Blue'
+      AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+      AND booking_agent_id IS NOT NULL) as b
+
+
+SELECT ticket.flight_num FROM purchases, ticket, flight
+  WHERE purchases.customer_email = 'one@nyu.edu'
+    AND purchases.ticket_id = ticket.ticket_id
+    AND ticket.airline_name = flight.airline_name
+    AND flight.airline_name = 'Jet Blue'
+    AND ticket.flight_num = flight.flight_num
+    AND departure_time < curdate()
+    AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+
+
+SELECT customer_email, COUNT(ticket_id) as sale
+    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+    JOIN flight USING(airline_name, flight_num)
+      WHERE flight.airline_name = 'Jet Blue'
+      AND purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+      GROUP BY customer_email ORDER BY sale
