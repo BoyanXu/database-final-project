@@ -17,7 +17,7 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 - [x]  13. `Add airplane in the system` (Airline staff)
 - [x]  14. `Add new airport in the system` (Airline staff)
 - [x]  15. `View all the booking agents` (Airline staff)
-- [ ]  16. `View frequent customers` (Airline staff)
+- [x]  16. `View frequent customers` (Airline staff)
 - [x]  17. `View reports` (Airline staff)
 - [x]  18. `Comparison of revenue earned` (Airline staff)
 - [x]  19. `View Top destinations` (Airline staff)
