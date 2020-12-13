@@ -5,6 +5,20 @@ import datetime
 from appconf import app, conn
 from forms import *
 
+from datetime import date, timedelta
+
+def today():
+    return date.today().isoformat()
+
+def last1mon():
+    return (date.today() - timedelta(days=30)).isoformat()
+
+def last6mons():
+    return (date.today() - timedelta(days=180)).isoformat()
+
+def last1year():
+    return (date.today() - timedelta(days=365)).isoformat()
+
 def getAgentID(username):
     cursor = conn.cursor()
     query = 'SELECT booking_agent_id FROM booking_agent WHERE email=%s'
@@ -13,15 +27,15 @@ def getAgentID(username):
     cursor.close()
     return data['booking_agent_id']
 
-def getCommission(username):
+def getCommission(username, fromDate=last1mon(), toDate=today()):
     cursor = conn.cursor()
     query = """SELECT SUM(price) as commission
                 FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
                 JOIN flight USING(airline_name, flight_num)
-                    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
+                    WHERE purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
                     AND email=%s GROUP by email
             """
-    cursor.execute(query, (username))
+    cursor.execute(query, (fromDate, toDate, username))
     data = cursor.fetchone()
     cursor.close()
     try:
@@ -29,10 +43,31 @@ def getCommission(username):
     except:
         return "Null"
 
+def getSales(username, fromDate=last1mon(), toDate=today()):
+    cursor = conn.cursor()
+    query = """SELECT COUNT(*) as sales
+                FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+                JOIN flight USING(airline_name, flight_num)
+                    WHERE purchase_date BETWEEN date_sub(%s, INTERVAL 2 DAY) AND date_sub(%s, INTERVAL 2 DAY)
+                    AND email=%s GROUP by email
+            """
+    cursor.execute(query, (fromDate, toDate, username))
+    data = cursor.fetchone()
+    cursor.close()
+    try:
+        return data['sales']
+    except:
+        return "Null"
+
 @app.route('/agentHome', methods=['GET', 'POST'])
 def agentHome():
     username = session['username']
-    commission=getCommission(username)
+    if request.method == 'GET':
+        commission = getCommission(username)
+        sales      = getSales(username)
+    else:
+        commission = getCommission(username, request.form['fromDate'], request.form['toDate'])
+        sales = getSales(username, request.form['fromDate'], request.form['toDate'])
 
     cursor = conn.cursor()
     query = """
@@ -49,8 +84,8 @@ def agentHome():
     cursor.execute(query, (username))
     flightData = cursor.fetchall()
     cursor.close()
-
-    return render_template("pages/agentHome.html", username=username, flightData=flightData, commission=commission)
+    form = AgentSaleForm(request.form)
+    return render_template("pages/agentHome.html", username=username, form=form, flightData=flightData, commission=commission, sales=sales)
 
 @app.route("/agentHome/purchase", methods=["GET"])
 def agentPurchase():

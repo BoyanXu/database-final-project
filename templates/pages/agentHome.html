@@ -47,15 +47,38 @@
     </tbody>
     {% endfor %}
   </table>
-
-  <h3>My commission in last month is: <strong>{{commission}}</strong></h3>
 </div>
+<br/>
+
+
 
 <div>
+  <div>
+  <form class="form" method="POST" action="/agentHome">
+  <h3 class="form-heading">
+    Choose Revenue Report Period: (Default is last 1 month)
+  </h3>
+
+  {{ form.fromDate(class_ = 'form-control first-input', placeholder = form.fromDate.label.text, required = true, autofocus = true) }}
+  {{ form.toDate(class_ = 'form-control last-input', placeholder = form.toDate.label.text, required = true) }}
+
+  <input type="submit" value="Change Status" class="btn btn-primary btn-lg btn-block" >
+  </form>
+</div>
+
+  <h4>My commission is: <strong>{{commission}}</strong></h4>
+  <h4>My sales is: <strong>{{sales}}</strong></h4>
+  <h4>My Average commission is: <strong>{{commission/sales}}</strong></h4>
+
+</div>
+
+
+
+<br>
   <p class="pull-none"><a href="{{ url_for('publicSearch') }}">Search for Flight</a></p>
   <p class="pull-none"><a href="{{ url_for('agentPurchase') }}">Buy a Ticket</a></p>
   <p class="pull-none"><a href="{{ url_for('agentViewCustomer') }}">View Top Customer</a></p>
-</div>
+</br>
 <br/>
 
 {% endblock %}

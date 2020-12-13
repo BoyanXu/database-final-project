@@ -141,6 +141,11 @@ SELECT SUM(price) as commission
     WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
       AND email='Booking@agent.com' GROUP by email
 
+SELECT COUNT(*) as sales
+  FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+  JOIN flight USING(airline_name, flight_num)
+    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
+      AND email='Booking@agent.com' GROUP by email
 
 -- app.route("/staffHome")
 -- Query Format: airline_name
