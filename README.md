@@ -25,16 +25,46 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 
 ## Use Cases
   1. Public search
-    ![Public search Page](https://github.com//BoyanXu/database-final-project/blob/main/static/img/public%20search%20page.png)
+    ![Public search Page](https://github.com/BoyanXu/database-final-project/blob/main/static/img/public%20search%20page.png?raw=true)
   2. Customer Homepage
-    ![Customer Homepage1](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20homepage1.png)
-    ![Customer Homepage2](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20homepage2.png)
-  3. Customer Purchase Ticket
-  ![Customer Purchase Ticket](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20purchase%20ticket.png)
-  4. Customer Search Flight
-  ![Customer Search Flight](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20search%20flight.png)
-  
+    ![Customer Homepage1](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20homepage1.png?raw=true)
+    ![Customer Homepage2](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20homepage2.png?raw=true)
+  3. Customer Search Flight
+  ![Customer Search Flight](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20search%20flight.png?raw=true)
+  4. Customer Purchase Ticket
+  ![Customer Purchase Ticket](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20purchase%20ticket.png?raw=true)
 
+  5. Agent Homepage
+  ![Agent Homepage](https://github.com//BoyanXu/database-final-project/blob/main/static/img/agent%20homepage.png?raw=true)
+
+  6. Agent Search Flight
+  ![Agent Search Flight](https://github.com//BoyanXu/database-final-project/blob/main/static/img/agent%20search.png?raw=true)
+
+  7. Agent Purchase Ticket
+  ![Agent Purchase Ticket](https://github.com//BoyanXu/database-final-project/blob/main/static/img/agent%20purchase.png?raw=true)
+
+  8. Agent View Customer
+  ![Agent View Customer](https://github.com//BoyanXu/database-final-project/blob/main/static/img/agent%20view%20top%20customer.png?raw=true)
+
+  9. Staff Homepage
+  ![Staff Homepage](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20homepage1.png?raw=true)
+  ![Staff Homepage](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20homepage2.png?raw=true)
+  ![Staff Homepage](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20homepage3.png?raw=true)
+
+  10. Staff Create Flight
+  ![Staff Create Flight](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20create%20flight.png?raw=true)
+
+  11. Staff Create Airplane
+  ![Staff Create Airplane](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20create%20airplane.png?raw=true)
+
+  12. Staff Create Airport
+  ![Staff Create Airport](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20create%20airport.png?raw=true)
+
+  13. Staff View Agent
+  ![Staff View Agent](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20view%20agent.png?raw=true)
+
+  14. Staff View Report
+  ![Staff View Report](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20view%20report.png?raw=true)
 ## Project Structure
 
 
