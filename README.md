@@ -22,8 +22,112 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 - [x]  18. `Comparison of revenue earned` (Airline staff)
 - [x]  19. `View Top destinations` (Airline staff)
 
+## File Structure
+- 📂 __flask\-boilerplate__
+   - 📄 [README.md](README.md)
+   - 📄 [agent.py](agent.py)
+   - 📄 [app.py](app.py)
+   - 📄 [appconf.py](appconf.py)
+   - 📄 [config.py](config.py)
+   - 📄 [customer.py](customer.py)
+   - 📂 __docs__
+     - 📄 [create\_database.sql](docs/create_database.sql)
+     - 📄 [database\_model.png](docs/database_model.png)
+     - 📄 [insert\_init\_records.sql](docs/insert_init_records.sql)
+     - 📄 [test\_query\_data.sql](docs/test_query_data.sql)
+   - 📄 [forms.py](forms.py)
+   - 📄 [login.py](login.py)
+   - 📄 [models.py](models.py)
+   - 📄 [register.py](register.py)
+   - 📄 [requirements.txt](requirements.txt)
+   - 📄 [staff.py](staff.py)
+   - 📂 __static__
+     - 📂 __css__
+       - 📄 [bootstrap\-3.1.1.min.css](static/css/bootstrap-3.1.1.min.css)
+       - 📄 [bootstrap\-theme\-3.1.1.css](static/css/bootstrap-theme-3.1.1.css)
+       - 📄 [bootstrap\-theme\-3.1.1.min.css](static/css/bootstrap-theme-3.1.1.min.css)
+       - 📄 [bootstrap\-theme.css.map](static/css/bootstrap-theme.css.map)
+       - 📄 [bootstrap.css.map](static/css/bootstrap.css.map)
+       - 📄 [font\-awesome\-4.1.0.min.css](static/css/font-awesome-4.1.0.min.css)
+       - 📄 [layout.forms.css](static/css/layout.forms.css)
+       - 📄 [layout.main.css](static/css/layout.main.css)
+       - 📄 [main.css](static/css/main.css)
+       - 📄 [main.quickfix.css](static/css/main.quickfix.css)
+       - 📄 [main.responsive.css](static/css/main.responsive.css)
+     - 📂 __fonts__
+       - 📄 [FontAwesome.otf](static/fonts/FontAwesome.otf)
+       - 📄 [fontawesome\-webfont.eot](static/fonts/fontawesome-webfont.eot)
+       - 📄 [fontawesome\-webfont.svg](static/fonts/fontawesome-webfont.svg)
+       - 📄 [fontawesome\-webfont.ttf](static/fonts/fontawesome-webfont.ttf)
+       - 📄 [fontawesome\-webfont.woff](static/fonts/fontawesome-webfont.woff)
+     - 📂 __ico__
+       - 📄 [apple\-touch\-icon\-114\-precomposed.png](static/ico/apple-touch-icon-114-precomposed.png)
+       - 📄 [apple\-touch\-icon\-144\-precomposed.png](static/ico/apple-touch-icon-144-precomposed.png)
+       - 📄 [apple\-touch\-icon\-57\-precomposed.png](static/ico/apple-touch-icon-57-precomposed.png)
+       - 📄 [apple\-touch\-icon\-72\-precomposed.png](static/ico/apple-touch-icon-72-precomposed.png)
+       - 📄 [favicon.png](static/ico/favicon.png)
+     - 📂 __img__
+       - 📄 [agent homepage.png](static/img/agent%20homepage.png)
+       - 📄 [agent purchase.png](static/img/agent%20purchase.png)
+       - 📄 [agent search.png](static/img/agent%20search.png)
+       - 📄 [agent view top customer.png](static/img/agent%20view%20top%20customer.png)
+       - 📄 [customer homepage1.png](static/img/customer%20homepage1.png)
+       - 📄 [customer homepage2.png](static/img/customer%20homepage2.png)
+       - 📄 [customer purchase ticket.png](static/img/customer%20purchase%20ticket.png)
+       - 📄 [customer search flight.png](static/img/customer%20search%20flight.png)
+       - 📄 [public search page.png](static/img/public%20search%20page.png)
+       - 📄 [staff create airplane.png](static/img/staff%20create%20airplane.png)
+       - 📄 [staff create airport.png](static/img/staff%20create%20airport.png)
+       - 📄 [staff create flight.png](static/img/staff%20create%20flight.png)
+       - 📄 [staff homepage1.png](static/img/staff%20homepage1.png)
+       - 📄 [staff homepage2.png](static/img/staff%20homepage2.png)
+       - 📄 [staff homepage3.png](static/img/staff%20homepage3.png)
+       - 📄 [staff view agent.png](static/img/staff%20view%20agent.png)
+       - 📄 [staff view report.png](static/img/staff%20view%20report.png)
+     - 📂 __js__
+       - 📂 __libs__
+         - 📄 [bootstrap\-3.1.1.min.js](static/js/libs/bootstrap-3.1.1.min.js)
+         - 📄 [jquery\-1.11.1.min.js](static/js/libs/jquery-1.11.1.min.js)
+         - 📄 [jquery\-1.11.1.min.map](static/js/libs/jquery-1.11.1.min.map)
+         - 📄 [modernizr\-2.8.2.min.js](static/js/libs/modernizr-2.8.2.min.js)
+         - 📄 [respond\-1.4.2.min.js](static/js/libs/respond-1.4.2.min.js)
+       - 📄 [plugins.js](static/js/plugins.js)
+       - 📄 [script.js](static/js/script.js)
+   - 📂 __templates__
+     - 📂 __errors__
+       - 📄 [404.html](templates/errors/404.html)
+       - 📄 [500.html](templates/errors/500.html)
+     - 📂 __forms__
+       - 📄 [forgot.html](templates/forms/forgot.html)
+       - 📄 [login.html](templates/forms/login.html)
+       - 📄 [register.html](templates/forms/register.html)
+       - 📄 [registerAgent.html](templates/forms/registerAgent.html)
+       - 📄 [registerCustomer.html](templates/forms/registerCustomer.html)
+       - 📄 [registerStaff.html](templates/forms/registerStaff.html)
+     - 📂 __layouts__
+       - 📄 [form.html](templates/layouts/form.html)
+       - 📄 [main.html](templates/layouts/main.html)
+     - 📂 __pages__
+       - 📄 [agentHome.html](templates/pages/agentHome.html)
+       - 📄 [agentPurchase.html](templates/pages/agentPurchase.html)
+       - 📄 [agentSearch.html](templates/pages/agentSearch.html)
+       - 📄 [agentViewCustomer.html](templates/pages/agentViewCustomer.html)
+       - 📄 [customerHome.html](templates/pages/customerHome.html)
+       - 📄 [customerPurchase.html](templates/pages/customerPurchase.html)
+       - 📄 [customerSearch.html](templates/pages/customerSearch.html)
+       - 📄 [placeholder.about.html](templates/pages/placeholder.about.html)
+       - 📄 [placeholder.home.html](templates/pages/placeholder.home.html)
+       - 📄 [publicSearch.html](templates/pages/publicSearch.html)
+       - 📄 [staffCheckCustomer.html](templates/pages/staffCheckCustomer.html)
+       - 📄 [staffCreateAirplane.html](templates/pages/staffCreateAirplane.html)
+       - 📄 [staffCreateAirport.html](templates/pages/staffCreateAirport.html)
+       - 📄 [staffCreateFlight.html](templates/pages/staffCreateFlight.html)
+       - 📄 [staffHome.html](templates/pages/staffHome.html)
+       - 📄 [staffViewAgent.html](templates/pages/staffViewAgent.html)
+       - 📄 [staffViewReport.html](templates/pages/staffViewReport.html)
 
-## Use Cases
+
+## Use Case Demo
   1. Public search
     ![Public search Page](https://github.com/BoyanXu/database-final-project/blob/main/static/img/public%20search%20page.png?raw=true)
   2. Customer Homepage
@@ -65,60 +169,8 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 
   14. Staff View Report
   ![Staff View Report](https://github.com//BoyanXu/database-final-project/blob/main/static/img/staff%20view%20report.png?raw=true)
-## Project Structure
 
-
-```sh
-├── README.md
-├── agent.py
-├── app.py
-├── appconf.py
-├── config.py
-├── customer.py
-├── docs
-│   ├── create_database.sql
-│   ├── database_model.png
-│   ├── insert_init_records.sql
-│   └── test_query_data.sql
-├── forms.py
-├── login.py
-├── models.py
-├── register.py
-├── requirements.txt
-├── staff.py
-└── templates
-    ├── errors
-    │   ├── 404.html
-    │   └── 500.html
-    ├── forms
-    │   ├── forgot.html
-    │   ├── login.html
-    │   ├── register.html
-    │   ├── registerAgent.html
-    │   ├── registerCustomer.html
-    │   └── registerStaff.html
-    ├── layouts
-    │   ├── form.html
-    │   └── main.html
-    └── pages
-        ├── agentHome.html
-        ├── agentPurchase.html
-        ├── agentViewCustomer.html
-        ├── customerHome.html
-        ├── customerPurchase.html
-        ├── customerSearch.html
-        ├── placeholder.about.html
-        ├── placeholder.home.html
-        ├── publicSearch.html
-        ├── staffCreateAirplane.html
-        ├── staffCreateAirport.html
-        ├── staffCreateFlight.html
-        ├── staffHome.html
-        ├── staffViewAgent.html
-        └── staffViewReport.html
-  ```
-
-## Accuse for Flight_Search demo failure
+## PS: Accuse for Flight_Search demo failure
 
 
 Unnecessary filter condition for arrival time.
