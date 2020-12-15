@@ -25,8 +25,15 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 
 ## Use Cases
   1. Public search
-    ![something](static/img/public search page.png)
-
+    ![Public search Page](https://github.com//BoyanXu/database-final-project/blob/main/static/img/public%20search%20page.png)
+  2. Customer Homepage
+    ![Customer Homepage1](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20homepage1.png)
+    ![Customer Homepage2](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20homepage2.png)
+  3. Customer Purchase Ticket
+  ![Customer Purchase Ticket](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20purchase%20ticket.png)
+  4. Customer Search Flight
+  ![Customer Search Flight](https://github.com//BoyanXu/database-final-project/blob/main/static/img/customer%20search%20flight.png)
+  
 
 ## Project Structure
 
