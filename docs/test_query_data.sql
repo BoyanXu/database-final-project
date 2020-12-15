@@ -1,29 +1,61 @@
--- @app.route("/customerHome")
-SELECT purchases.ticket_id,
-       ticket.airline_name,
-       ticket.flight_num,
-       flight.departure_airport,
-       flight.departure_time,
-       flight.arrival_airport,
-       flight.arrival_time,
-       flight.price,
-       flight.status,
-       flight.airplane_id
-       FROM purchases, ticket, flight
-            WHERE purchases.customer_email = 'one@nyu.edu'
-              AND purchases.ticket_id = ticket.ticket_id
-              AND ticket.airline_name = flight.airline_name
-              AND ticket.flight_num = flight.flight_num
-              AND departure_time > curdate()
+------------------------------------------------------------------
+-- Customer
+  -- Homepage
+  SELECT purchases.ticket_id,
+    ticket.airline_name,
+    ticket.flight_num,
+    flight.departure_airport,
+    flight.departure_time,
+    flight.arrival_airport,
+    flight.arrival_time,
+    flight.price,
+    flight.status,
+    flight.airplane_id
+    FROM purchases, ticket, flight
+        WHERE purchases.customer_email = 'one@nyu.edu'
+          AND purchases.ticket_id = ticket.ticket_id
+          AND ticket.airline_name = flight.airline_name
+          AND ticket.flight_num = flight.flight_num
+          AND departure_time > curdate()
 
 
+  -- Track My spending
+  SELECT SUM(flight.price) as TotalSpending
+    FROM purchases, ticket, flight
+      WHERE purchases.customer_email = 'one@nyu.edu'
+      AND purchases.ticket_id = ticket.ticket_id
+      AND ticket.airline_name = flight.airline_name
+      AND ticket.flight_num = flight.flight_num
+      AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+      GROUP BY purchases.customer_email
 
--- @app.route("/customerSearch")
--- Query Format: fromCity,      fromAirport, fromDate,   toDate,     toCity,        toAirport
--- Query Input: San Francisco, SFO,         2020-12-20, 2020-12-21, New York City, JFK
--- Response Format: airline_name, flight_num, departure_airport, departure_time, arrival_airport, airplane_id, arrival_time, price
--- Response Data  : Jet Blue,     139,        SFO,               2020-12-20,     JFK,             2020-12-21
-SELECT distinct f.airline_name,
+
+  -- Buy Ticket
+  SELECT COUNT(*) AS count FROM ticket
+    WHERE ticket.airline_name = 'Jet Blue' AND ticket.flight_num = '915'
+
+  SELECT MAX(ticket_id) + 1 as nxt_ticket_id FROM ticket
+    WHERE (SELECT COUNT(*) as count FROM ticket
+            WHERE ticket.airline_name = 'Jet Blue' AND ticket.flight_num = '915'
+          ) < (SELECT airplane.seats as seats FROM flight, airplane
+                WHERE flight.airline_name = 'Jet Blue' AND flight.flight_num = '915'
+                  AND flight.airplane_id = airplane.airplane_id)
+
+
+  -- Spending Details
+  SELECT SUM(flight.price) as spend, YEAR(purchases.purchase_date) as year, MONTH(purchases.purchase_date) as month
+      FROM purchases, ticket, flight
+        WHERE purchases.customer_email = 'one@nyu.edu'
+        AND purchases.ticket_id = ticket.ticket_id
+        AND ticket.airline_name = flight.airline_name
+        AND ticket.flight_num = flight.flight_num
+        AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+      GROUP BY year, month
+      ORDER BY purchases.purchase_date
+
+
+  -- Search Ticket
+  SELECT distinct f.airline_name,
                 f.flight_num,
                 departure_airport,
                 departure_time,
@@ -51,134 +83,47 @@ SELECT distinct f.airline_name,
                               AND ticket.flight_num = f.flight_num)
 
 
--- app.route("/staffHome")
--- Query Format: airline_name
--- Query Input: Jet Blue
--- Response Format: airline_name,  flight_num,  departure_airport,  departure_time,  arrival_airport,  arrival_time,  price,  status,  airplane_id
--- Response Data: ..
-SELECT * FROM flight
-  WHERE  airline_name = 'Jet Blue'
-    AND (
-          ( departure_time BETWEEN Curdate() AND Date_add(Curdate(), interval 30 day) )
-          OR
-          ( arrival_time BETWEEN Curdate() AND Date_add(Curdate(), interval 30 day) )
-        )
-
--- app.route("/customerHome/purchase/status")
--- Query Format: airline_name, flight_num
--- Query Input: Jet Blue,
-SELECT COUNT(*) AS count FROM ticket
-  WHERE ticket.airline_name = 'Jet Blue' AND ticket.flight_num = '915'
--- Response Format: count
--- Response Data: 3
-
-
--- app.route("/customerHome/purchase/status")
--- Query Format: airline_name, flight_num
--- Query Input: Jet Blue, 915
-SELECT MAX(ticket_id) + 1 as nxt_ticket_id FROM ticket
-  WHERE (SELECT COUNT(*) as count FROM ticket
-          WHERE ticket.airline_name = 'Jet Blue' AND ticket.flight_num = '915'
-        ) < (SELECT airplane.seats as seats FROM flight, airplane
-              WHERE flight.airline_name = 'Jet Blue' AND flight.flight_num = '915'
-                AND flight.airplane_id = airplane.airplane_id)
--- Response Format: nxt_ticket_id
--- Response Data: 10  (NULL if unsatisfied)
-
-
-
-
--- app.route("/agentHome")
--- Query Format: agentID
--- Query Input: Booking@agent.com,
-SELECT ticket.ticket_id, ticket.airline_name, ticket.flight_num,
+------------------------------------------------------------------
+-- Agent
+  -- View Homepage
+  SELECT ticket.ticket_id, ticket.airline_name, ticket.flight_num,
         departure_airport, departure_time, arrival_airport, arrival_time, airplane_id, status,
         price, customer_email, purchases.booking_agent_id, purchase_date
- FROM purchases, ticket, flight, booking_agent
-  WHERE purchases.ticket_id = ticket.ticket_id
-    AND ticket.airline_name = flight.airline_name
-    AND ticket.flight_num   = flight.flight_num
-    AND booking_agent.email = 'Booking@agent.com'
-    AND booking_agent.booking_agent_id = purchases.booking_agent_id
-    AND departure_time > curdate() ORDER BY customer_email
--- Response Format: ticket_id, airline_name, flight_num, departure_airport, departure_time, arrival_airport, arrival_time, airplane_id, status, price, customer_email, booking_agent_id, purchase_date
--- Response Data: ...
+    FROM purchases, ticket, flight, booking_agent
+      WHERE purchases.ticket_id = ticket.ticket_id
+        AND ticket.airline_name = flight.airline_name
+        AND ticket.flight_num   = flight.flight_num
+        AND booking_agent.email = 'Booking@agent.com'
+        AND booking_agent.booking_agent_id = purchases.booking_agent_id
+        AND departure_time > curdate() ORDER BY customer_email
+
+  SELECT SUM(price) as commission
+    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+    JOIN flight USING(airline_name, flight_num)
+      WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
+        AND email='Booking@agent.com' GROUP by email
+
+  SELECT COUNT(*) as sales
+    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+    JOIN flight USING(airline_name, flight_num)
+      WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
+        AND email='Booking@agent.com' GROUP by email
 
 
--- app.route("/staffHome/viewStaff/status")
--- Query Format: airlineName, range
--- Query Input: Jet Blue, MONTH
-SELECT email, COUNT(ticket_id) as sale
-  FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
-  JOIN flight USING(airline_name, flight_num)
-    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
-      AND airline_name='Jet Blue' GROUP BY email ORDER BY sale DESC
--- Response Format: email, sale
-
-
--- app.route("/staffHome/viewStaff/status")
--- Query Format: range, airlineName
--- Query Input : YEAR,  Jet Blue
-SELECT email, SUM(price) as commission
-  FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
-  JOIN flight USING(airline_name, flight_num)
-    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
-      AND airline_name='Jet Blue' GROUP by email ORDER by commission DESC
--- Response Format: email, commission
-
--- Query Format: Status, flight_num
--- Query Input: "In progress", 102
--- app.route("/staffHome")
-UPDATE flight SET status='In-progress' where flight_num=102 and airline_name = 'Jet Blue'
-
-
--- app.route("/agentHome")
--- Query Format: email
--- Query Input : Booking@agent.com
-SELECT SUM(price) as commission
+  -- View commission
+  SELECT SUM(price) as commission
   FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
   JOIN flight USING(airline_name, flight_num)
     WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
       AND email='Booking@agent.com' GROUP by email
 
-SELECT COUNT(*) as sales
-  FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
-  JOIN flight USING(airline_name, flight_num)
-    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
-      AND email='Booking@agent.com' GROUP by email
-
--- app.route("/staffHome")
--- Query Format: airline_name
--- Query Input : Jet Blue
-SELECT airport_city, COUNT(ticket_id) as count FROM airport, ticket JOIN flight USING(airline_name, flight_num)
-    WHERE airport_name = arrival_airport
-    AND airline_name='Jet Blue' GROUP by airport_city ORDER by count DESC
--- Response Format: airport_name, count
+  SELECT COUNT(*) as sales
+    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+    JOIN flight USING(airline_name, flight_num)
+      WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 MONTH)
+        AND email='Booking@agent.com' GROUP by email
 
 
--- Customer
-  -- Track My spending
-  SELECT SUM(flight.price) as TotalSpending
-    FROM purchases, ticket, flight
-      WHERE purchases.customer_email = 'one@nyu.edu'
-      AND purchases.ticket_id = ticket.ticket_id
-      AND ticket.airline_name = flight.airline_name
-      AND ticket.flight_num = flight.flight_num
-      AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
-      GROUP BY purchases.customer_email
-
-  -- Spending Details
-SELECT SUM(flight.price) as spend, YEAR(purchases.purchase_date) as year, MONTH(purchases.purchase_date) as month
-    FROM purchases, ticket, flight
-      WHERE purchases.customer_email = 'one@nyu.edu'
-      AND purchases.ticket_id = ticket.ticket_id
-      AND ticket.airline_name = flight.airline_name
-      AND ticket.flight_num = flight.flight_num
-      AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
-    GROUP BY year, month
-    ORDER BY purchases.purchase_date
-
--- Agent
   -- Rank Customer
   SELECT customer_email, COUNT(ticket_id) as sale
     FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
@@ -195,42 +140,72 @@ SELECT SUM(flight.price) as spend, YEAR(purchases.purchase_date) as year, MONTH(
       GROUP by customer_email ORDER by commission DESC LIMIT 5
 
 
--- Staff Report
-SELECT YEAR(purchase_date) as year, MONTH(purchase_date) as month, COUNT(ticket_id) as sales
-  FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+------------------------------------------------------------------
+-- Staff
+  -- View Homepage
+  SELECT * FROM flight
     WHERE  airline_name = 'Jet Blue'
-    AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
-  GROUP BY year, month
+      AND (
+            ( departure_time BETWEEN Curdate() AND Date_add(Curdate(), interval 30 day) )
+            OR
+            ( arrival_time BETWEEN Curdate() AND Date_add(Curdate(), interval 30 day) )
+          )
+
+  SELECT airport_city, COUNT(ticket_id) as count FROM airport, ticket JOIN flight USING(airline_name, flight_num)
+      WHERE airport_name = arrival_airport
+      AND airline_name='Jet Blue' GROUP by airport_city ORDER by count DESC
+
+  UPDATE flight SET status='In-progress' where flight_num=102 and airline_name = 'Jet Blue'
 
 
---
-
-SELECT *  FROM
-
-(SELECT SUM(price) as unagented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
-    WHERE  airline_name = 'Jet Blue'
-    AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
-    AND booking_agent_id IS NULL) as a,
-
-  (SELECT SUM(price) as agented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+  -- View Report
+  SELECT YEAR(purchase_date) as year, MONTH(purchase_date) as month, COUNT(ticket_id) as sales
+    FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
       WHERE  airline_name = 'Jet Blue'
       AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
-      AND booking_agent_id IS NOT NULL) as b
+    GROUP BY year, month
+
+  SELECT *  FROM
+  (SELECT SUM(price) as unagented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+      WHERE  airline_name = 'Jet Blue'
+      AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+      AND booking_agent_id IS NULL) as a,
+
+    (SELECT SUM(price) as agented FROM purchases NATURAL JOIN ticket JOIN flight USING(airline_name, flight_num)
+        WHERE  airline_name = 'Jet Blue'
+        AND purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+        AND booking_agent_id IS NOT NULL) as b
 
 
-SELECT ticket.flight_num FROM purchases, ticket, flight
-  WHERE purchases.customer_email = 'one@nyu.edu'
-    AND purchases.ticket_id = ticket.ticket_id
-    AND ticket.airline_name = flight.airline_name
-    AND flight.airline_name = 'Jet Blue'
-    AND ticket.flight_num = flight.flight_num
-    AND departure_time < curdate()
-    AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
+  -- View customer's flights
+  SELECT ticket.flight_num FROM purchases, ticket, flight
+    WHERE purchases.customer_email = 'one@nyu.edu'
+      AND purchases.ticket_id = ticket.ticket_id
+      AND ticket.airline_name = flight.airline_name
+      AND flight.airline_name = 'Jet Blue'
+      AND ticket.flight_num = flight.flight_num
+      AND departure_time < curdate()
+      AND purchases.purchase_date BETWEEN date_sub('2020-01-01', INTERVAL 2 DAY) AND date_sub('2020-12-31', INTERVAL 2 DAY)
 
 
-SELECT customer_email, COUNT(ticket_id) as sale
+  -- View most frequent customer_email
+  SELECT customer_email, COUNT(ticket_id) as sale
     FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
     JOIN flight USING(airline_name, flight_num)
       WHERE flight.airline_name = 'Jet Blue'
       AND purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
       GROUP BY customer_email ORDER BY sale
+
+
+  -- Rank Agent
+  SELECT email, COUNT(ticket_id) as sale
+  FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+  JOIN flight USING(airline_name, flight_num)
+    WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+      AND airline_name='Jet Blue' GROUP BY email ORDER BY sale DESC
+
+  SELECT email, SUM(price) as commission
+    FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket
+    JOIN flight USING(airline_name, flight_num)
+      WHERE purchase_date >= date_sub(curdate(), INTERVAL 1 YEAR)
+        AND airline_name='Jet Blue' GROUP by email ORDER by commission DESC
