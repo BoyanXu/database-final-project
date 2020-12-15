@@ -197,3 +197,63 @@ def agentViewCustomerStatus():
 
     form = ViewCustomerForm(request.form)
     return render_template("pages/agentViewCustomer.html", username=username, form=form, criteria=criteria, data=data, labels=labels, dataset=dataset)
+
+@app.route('/agentHome/search', methods=['GET'])
+def agentSearch():
+    username = session["username"]
+    form = FlightSearchForm(request.form)
+    return render_template('pages/agentSearch.html', username=username, form=form)
+
+
+@app.route('/agentHome/search/results', methods=['GET', 'POST'])
+def agentSearchHandler():
+
+    fromCity = request.form['fromCity']
+    fromAirport = request.form['fromAirport']
+    fromDate = request.form['fromDate']
+    toCity = request.form['toCity']
+    toAirport = request.form['toAirport']
+    toDate = request.form['toDate']
+    query = """SELECT distinct f.airline_name,
+                f.flight_num,
+                departure_airport,
+                departure_time,
+                arrival_airport,
+                arrival_time,
+                price,
+                airplane_id
+                    FROM flight as f, airport
+                    WHERE airport.airport_name=f.departure_airport
+                    AND airport.airport_city = %s
+                    AND airport.airport_name = %s
+                    AND f.departure_time BETWEEN DATE_SUB(%s, INTERVAL 2 DAY) AND DATE_ADD(%s, INTERVAL 2 DAY)
+                    AND (f.airline_name, f.flight_num) in
+                        (SELECT flight.airline_name, flight.flight_num FROM flight, airport
+                            WHERE airport.airport_name=flight.arrival_airport
+                            AND airport.airport_city = %s
+                            AND airport.airport_name = %s)
+                    AND (SELECT DISTINCT seats FROM flight, airplane
+                            WHERE flight.airplane_id = airplane.airplane_id
+                            AND flight.airline_name = airplane.airline_name
+                            AND flight.airline_name = f.airline_name
+                            AND flight.flight_num = f.flight_num) >=
+                                (SELECT COUNT(*) FROM ticket
+                                    WHERE ticket.airline_name = f.airline_name
+                                    AND ticket.flight_num = f.flight_num)
+    """
+
+    cursor = conn.cursor()
+    cursor.execute(query, (fromCity, fromAirport, fromDate, toDate, toCity, toAirport))
+    data = cursor.fetchall()
+    cursor.close()
+
+    if(data):
+        username = session["username"]
+        form = FlightSearchForm(request.form)
+        return render_template('pages/agentSearch.html', username=username, form=form, results=data)
+    else:
+        #returns an error message to the html page
+        username = session["username"]
+        form = FlightSearchForm(request.form)
+        error = 'No results found'
+        return render_template('pages/agentSearch.html', username=username, form=form, error=error)

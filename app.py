@@ -44,6 +44,7 @@ def publicSearch():
 
 @app.route('/search/result', methods=['GET', 'POST'])
 def publicSearchResult():
+
     fromCity = request.form['fromCity']
     fromAirport = request.form['fromAirport']
     fromDate = request.form['fromDate']

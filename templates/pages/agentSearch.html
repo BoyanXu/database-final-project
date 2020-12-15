@@ -3,10 +3,10 @@
 {% block content %}
 
 <div class="page-header">
-  <h1>Public Search Page</h1>
+  <h1>Agent {{username}}'s Search Page</h1>
 </div>
 
-<form class="form" method="POST" action="/search/result">
+<form class="form" method="POST" action="/agentHome/search/results">
   <h3 class="form-heading">
     Search Filter
   </h3>
@@ -19,7 +19,8 @@
   {{ form.toDate(class_ = 'form-control last-input', placeholder = form.toDate.label.text, required = true) }}
 
   <input type="submit" value="Search Flight" class="btn btn-primary btn-lg btn-block" >
-
+  <p class="pull-left"><a href="{{ url_for('agentHome') }}">Go to homegape</a></p>
+  <p class="pull-right"><a href="{{ url_for('agentPurchase') }}">Buy a Ticket</a></p>
 </form>
 
 <div>
@@ -55,10 +56,13 @@
     </tr>
     {% endfor %}
   </table>
+  <p class="pull-left"><a href="{{ url_for('agentPurchase') }}">Buy a Ticket</a></p>
   {% endif %}
 
   {% if error %}
       <p class="alert alert-danger" role="alert"><strong>Error:</strong> {{error}}</p>
   {% endif %}
+
+</div>
 
 {% endblock %}

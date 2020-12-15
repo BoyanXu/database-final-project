@@ -22,14 +22,6 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 - [x]  18. `Comparison of revenue earned` (Airline staff)
 - [x]  19. `View Top destinations` (Airline staff)
 
-## Accuse for Flight_Search demo failure
-
-
-Unnecessary filter condition for arrival time.
-```sql
-AND '2020-12-21' BETWEEN DATE_SUB(f.arrival_time, INTERVAL 2 DAY) AND DATE_ADD(f.arrival_time, INTERVAL 2 DAY)
-
-```
 
 ## Project Structure
 
@@ -83,3 +75,12 @@ AND '2020-12-21' BETWEEN DATE_SUB(f.arrival_time, INTERVAL 2 DAY) AND DATE_ADD(f
         ├── staffViewAgent.html
         └── staffViewReport.html
   ```
+
+## Accuse for Flight_Search demo failure
+
+
+Unnecessary filter condition for arrival time.
+```sql
+AND '2020-12-21' BETWEEN DATE_SUB(f.arrival_time, INTERVAL 2 DAY) AND DATE_ADD(f.arrival_time, INTERVAL 2 DAY)
+
+```

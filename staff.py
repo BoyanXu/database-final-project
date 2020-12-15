@@ -379,3 +379,4 @@ def staffCheckCustomer():
     else:
         form = StaffCheckCustomer(request.form)
         return render_template("pages/staffCheckCustomer.html", username=username, form=form)
+
