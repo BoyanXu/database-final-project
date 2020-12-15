@@ -1,5 +1,6 @@
 # Database Final Project
 This is the repo holds source code for the final project of Databases CSCI-SHU 213 2020 Fall
+Team: Boyan & Weiran
 ## Roadmap
 
 - [x]  1. `Register` (Customer, Booking agent, Airline staff)
