@@ -23,6 +23,11 @@ This is the repo holds source code for the final project of Databases CSCI-SHU 2
 - [x]  19. `View Top destinations` (Airline staff)
 
 
+## Use Cases
+  1. Public search
+    ![something](static/img/public search page.png)
+
+
 ## Project Structure
 
 
